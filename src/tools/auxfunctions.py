@@ -14,7 +14,7 @@ from sklearn import cluster
 from sklearn.metrics import silhouette_score
 import matplotlib.pyplot as plt
 import seaborn as sns
-
+import os
 
 # This functions takes a series of data, linearly interpolates it to the [0, 1] interval,
 # Then computes its sample statistical moments, returns it in dictionary form to be appended in a data frame.
@@ -66,7 +66,7 @@ def plot_inertias(df, algorithm):
     plt.plot(range(1, 10), inertias, 'bo')
     plt.ylabel("Inertia for K-Means Clustering")
     plt.xlabel("Number of Clusters")
-    plt.title("Inertia for K-Means Clustering , data generated with " + algorithm)
+    plt.title("Inertia for K-Means Clustering , data generated with " + algorithm.name)
     plt.grid(which='both', axis='both')
     plt.draw()
 
@@ -76,14 +76,14 @@ def plot_inertias(df, algorithm):
     plt.plot(range(2, 10), silhouette_scores, 'bo')
     plt.ylabel("Silhouette Scores for K-Means Clustering")
     plt.xlabel("Number of Clusters")
-    plt.title("Silhouette Scores for K-Means Clustering, data generated with " + algorithm)
+    plt.title("Silhouette Scores for K-Means Clustering, data generated with " + algorithm.name)
     plt.grid(which='both', axis='both')
     plt.draw()
 
     print(silhouette_scores)
     print("max(silhouette_scores) = " + str(max(silhouette_scores)))
     optimal_k = 2 + silhouette_scores.index(max(silhouette_scores))
-    print("For data generated with " + algorithm + " the maximum silhouette occurs for " + str(optimal_k) + " clusters")
+    print("For data generated with " + algorithm.name + " the maximum silhouette occurs for " + str(optimal_k) + " clusters")
     return optimal_k
 
 
@@ -95,7 +95,7 @@ def exercises_1_3(algorithm):
         ex1_df = ex1_df.append(generatedataframe(N, algorithm), ignore_index=True)
 
     # run K-means elbow and silhouette plot:
-    selected_k = plot_inertias(ex1_df, algorithm.name)
+    selected_k = plot_inertias(ex1_df, algorithm)
 
     ex_kmeans = k_means(ex1_df, selected_k)
 
@@ -103,7 +103,7 @@ def exercises_1_3(algorithm):
     ex1_df['kmeans'] = ex_kmeans.labels_
 
     # Save in excel for logging/debbuging:
-    ex1_df.to_excel(algorithm.name + '_auxfunctions_test.xlsx')
+    ex1_df.to_excel(os.path.join(os.getcwd(),'mount', algorithm.name + '_auxfunctions_test.xlsx'))
 
     # plot heatmap with incidence versus case:
     # Create heatmap:

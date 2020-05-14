@@ -25,13 +25,13 @@ class ReportDocument:
         self.file_path = os.path.dirname(os.path.abspath(__file__))
         file_version = 0
 
-        while os.path.isfile(os.path.join(self.file_path, "List_RianKoja_v"+str(file_version)+".docx")):
+        while os.path.isfile(os.path.join(self.file_path, "mount", "List_RianKoja_v" + str(file_version) + ".docx")):
             file_version += 1
 
         self.file_name = "List_RianKoja_v" + str(file_version) + ".docx"
 
     def finish(self):
-        self.document.save(os.path.join(self.file_path, self.file_name))
+        self.document.save(os.path.join(os.getcwd(),'mount', self.file_name))
 
         print("finished word document file.")
 
