@@ -6,7 +6,7 @@
 ########################################################################################################################
 import os
 from docx import Document
-
+from docx.shared import Inches
 
 class ReportDocument:
     def __init__(self):
@@ -30,8 +30,16 @@ class ReportDocument:
 
         self.file_name = "List_RianKoja_v" + str(file_version) + ".docx"
 
+    def add_fig(self, memfile, wid=6):
+        # Calling function must do:
+        # from pandas.compat import StringIO
+        # memfile = StringIO()
+        # plt.savefig(memfile)
+        self.document.add_picture(memfile, width=Inches(wid))
+        memfile.close()
+
     def finish(self):
-        self.document.save(os.path.join(os.getcwd(),'mount', self.file_name))
+        self.document.save(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'mount', self.file_name))
 
         print("finished word document file.")
 

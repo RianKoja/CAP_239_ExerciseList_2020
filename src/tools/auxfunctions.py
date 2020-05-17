@@ -7,6 +7,7 @@
 # Standard imports:
 import statistics
 import pandas as pd
+from pandas.compat import BytesIO
 import numpy as np
 from scipy.stats import moment
 from scipy.interpolate import interp1d
@@ -15,6 +16,7 @@ from sklearn.metrics import silhouette_score
 import matplotlib.pyplot as plt
 import seaborn as sns
 import os
+from tools import createdocument
 
 # This functions takes a series of data, linearly interpolates it to the [0, 1] interval,
 # Then computes its sample statistical moments, returns it in dictionary form to be appended in a data frame.
@@ -52,7 +54,7 @@ def k_means(df, k):
     return kmeans
 
 
-def plot_inertias(df, algorithm):
+def plot_inertias(df, algorithm, doc_report):
     inertias = []
     silhouette_scores = []
     for ii in range(1, 10):
@@ -69,6 +71,9 @@ def plot_inertias(df, algorithm):
     plt.title("Inertia for K-Means Clustering , data generated with " + algorithm.name)
     plt.grid(which='both', axis='both')
     plt.draw()
+    memfile = BytesIO()
+    plt.savefig(memfile)
+    doc_report.add_fig(memfile)
 
     # Also plot silhouette score:
     plt.figure()
@@ -79,6 +84,9 @@ def plot_inertias(df, algorithm):
     plt.title("Silhouette Scores for K-Means Clustering, data generated with " + algorithm.name)
     plt.grid(which='both', axis='both')
     plt.draw()
+    memfile = BytesIO()
+    plt.savefig(memfile)
+    doc_report.add_fig(memfile)
 
     print(silhouette_scores)
     print("max(silhouette_scores) = " + str(max(silhouette_scores)))
@@ -87,7 +95,7 @@ def plot_inertias(df, algorithm):
     return optimal_k
 
 
-def exercises_1_3(algorithm):
+def exercises_1_3(algorithm, doc_report):
     print("This is ", __name__, " in ", __file__)
 
     ex1_df = pd.DataFrame(columns=['mean', 'variance', 'skewness', 'kurtosis', 'N_elements'])
@@ -95,7 +103,7 @@ def exercises_1_3(algorithm):
         ex1_df = ex1_df.append(generatedataframe(N, algorithm), ignore_index=True)
 
     # run K-means elbow and silhouette plot:
-    selected_k = plot_inertias(ex1_df, algorithm)
+    selected_k = plot_inertias(ex1_df, algorithm, doc_report)
 
     ex_kmeans = k_means(ex1_df, selected_k)
 
@@ -103,7 +111,7 @@ def exercises_1_3(algorithm):
     ex1_df['kmeans'] = ex_kmeans.labels_
 
     # Save in excel for logging/debbuging:
-    ex1_df.to_excel(os.path.join(os.getcwd(),'mount', algorithm.name + '_auxfunctions_test.xlsx'))
+    ex1_df.to_excel(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'mount', algorithm.name + '_auxfunctions_test.xlsx'))
 
     # plot heatmap with incidence versus case:
     # Create heatmap:
@@ -111,15 +119,25 @@ def exercises_1_3(algorithm):
     cross_tab = pd.crosstab(ex1_df['N_elements'], ex1_df['kmeans'])
     print(cross_tab)
     sns.set()
-    sns.heatmap(cross_tab, cmap="YlGnBu", annot=True, cbar=False, fmt="d", square=True, linewidths=0.5)
+    sns_plot = sns.heatmap(cross_tab, cmap="YlGnBu", annot=True, cbar=False, fmt="d", square=True, linewidths=0.5)
     plt.title("Incidence Matrix obtained from k-means based on \n" + 'N_elements' + " and " + 'kmeans' + " with k=" +
               str(selected_k))
+    memfile = BytesIO()
+    plt.savefig(memfile)
+    doc_report.add_fig(memfile)
 
     # Plot the k-means grouping
-    sns.pairplot(ex1_df, hue="kmeans", vars=['variance', 'skewness', 'kurtosis'])
+    plt.figure()
+    sns_plot = sns.pairplot(ex1_df, hue="kmeans", vars=['variance', 'skewness', 'kurtosis'])
+    memfile2 = BytesIO()
+    plt.savefig(memfile2)
+    doc_report.add_fig(memfile2)
 
     # For comparison, color mark the number of elements
-    sns.pairplot(ex1_df, hue='N_elements', vars=['variance', 'skewness', 'kurtosis'])
+    sns_plot = sns.pairplot(ex1_df, hue='N_elements', vars=['variance', 'skewness', 'kurtosis'])
+    memfile3 = BytesIO()
+    plt.savefig(memfile3)
+    doc_report.add_fig(memfile3)
 
 
 # This module is meant to provide functions imported elsewhere, nonetheless, it is useful to run it directly for
@@ -128,11 +146,16 @@ if __name__ == '__main__':
     # Use fixed seed, so results don't change between runs of the same algorithm:
     np.random.seed(82745949)
 
+    # Initnialize report for debbuging:
+    test_report = createdocument.ReportDocument()
+
     # For questions 1-3, do the same procedure importing a different signal generator:
     from generators import GRNG
 
     a_algorithm = GRNG()
     # Run the function thar performs exercises:
-    exercises_1_3(a_algorithm)
+    exercises_1_3(a_algorithm, test_report)
+
+    test_report.finish()
 
     plt.show()

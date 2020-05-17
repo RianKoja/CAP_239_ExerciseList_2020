@@ -24,7 +24,7 @@ doc_report = createdocument.ReportDocument()
 
 algorithm = GRNG()
 
-auxfunctions.exercises_1_3(algorithm)
+auxfunctions.exercises_1_3(algorithm, doc_report)
 
 # Finish the report:
 doc_report.finish()
