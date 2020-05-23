@@ -9,9 +9,6 @@ from scipy.interpolate import interp1d
 # Then computes its sample statistical moments, returns it in dictionary form to be appended in a data frame.
 def series2datasetline(series):
     # Normalize to the [0, 1] interval:
-    print("SERIESSERIESSERIESSERIESSERIESSERIESSERIESSERIESSERIESSERIESSERIESSERIESSERIESSERIESSERIES")
-    print(series)
-    print("SERIESSERIESSERIESSERIESSERIESSERIESSERIESSERIESSERIESSERIESSERIESSERIESSERIESSERIESSERIES")
     mapper = interp1d([min(series), max(series)], [0, 1])
     normalized_series = mapper(series)
     # Cannot use moment 1 as it would always be zero. Also not used anyway.

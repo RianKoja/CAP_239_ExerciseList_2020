@@ -46,12 +46,12 @@ def graph(df, method='unbiased', discrete=False, boot=None):
         s2boot = (skew(pd.DataFrame(databoot)))**2
         kurtboot = kurtosis(pd.DataFrame(databoot))+3
 
-        kurtmax = max(10,ceil(max(kurtboot)))
-        xmax = max(4,ceil(max(s2boot)))
+        kurtmax = max(10, ceil(max(kurtboot)))
+        xmax = max(4, ceil(max(s2boot)))
 
     else:
-        kurtmax = max(10,ceil(kurtdata))
-        xmax = max(4,ceil(skewdata**2))
+        kurtmax = max(10, ceil(kurtdata))
+        xmax = max(4, ceil(skewdata**2))
 
     ymax = kurtmax-1
 
@@ -200,3 +200,5 @@ def graph(df, method='unbiased', discrete=False, boot=None):
     print(f'min:{res[0]:.4f}\nmax:{res[1]:.4f}\nmean:{res[3]:.4f}\nstandard deviation:{res[4]:.4f}'f'\nskewness:{res[5]:.4f}\nkurtosis:{res[6]:.4f} +3 for the plot')
 
 
+if __name__ == 'main':
+    graph()
