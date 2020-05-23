@@ -8,6 +8,7 @@ import os
 from docx import Document
 from docx.shared import Inches
 
+
 class ReportDocument:
     def __init__(self):
         self.document = Document()
@@ -15,17 +16,10 @@ class ReportDocument:
         self.document.add_heading('Rian Koja', level=1)
         self.document.add_heading('CAP 239 Computational Mathematics', level=1)
 
-        self.document.add_heading("Comment #" + str("22"), level=1)
-        self.document.add_paragraph("loooool")
-        self.document.add_heading('Response:', level=2)
-        self.document.add_paragraph("\n\n")
-        self.document.add_heading('Status:', level=2)
-        self.document.add_paragraph("To be implemented")
-
-        self.file_path = os.path.dirname(os.path.abspath(__file__))
+        self.file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'mount')
         file_version = 0
 
-        while os.path.isfile(os.path.join(self.file_path, "mount", "List_RianKoja_v" + str(file_version) + ".docx")):
+        while os.path.isfile(os.path.join(self.file_path, "List_RianKoja_v" + str(file_version) + ".docx")):
             file_version += 1
 
         self.file_name = "List_RianKoja_v" + str(file_version) + ".docx"
@@ -39,7 +33,7 @@ class ReportDocument:
         memfile.close()
 
     def finish(self):
-        self.document.save(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'mount', self.file_name))
+        self.document.save(os.path.join(self.file_path, self.file_name))
 
         print("finished word document file.")
 

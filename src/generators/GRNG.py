@@ -14,16 +14,27 @@ import pandas as pd
 from numpy import sqrt
 import matplotlib.pyplot as plt
 
+from tools import stat
 
 class GRNG:
     def __init__(self):
         self.name = 'grng'
+        self.N = [64, 128, 256, 512, 1024, 2048, 4096, 8192]
 
     def generator(self, points, resolution):
         df = pd.DataFrame(np.random.randn(points) * sqrt(resolution / points)).cumsum()
         #  df = pd.Series(np.random.randn(no) * sqrt(re) * sqrt(1 / 128.)).cumsum()
         ret = df[0].tolist()
-        return ret
+        new_df = pd.DataFrame(stat.series2datasetline(ret), index=[1])
+        return new_df
+
+    def makedataframe(self, df):
+        for N in self.N:
+            for trial in range(0, 10):  # Gerando 10 sinais.
+                data = self.generator(N, N / 12)
+                data['Type'] = N
+                df = df.append(data, ignore_index=True)
+        return df
 
 
 if __name__ == "__main__":

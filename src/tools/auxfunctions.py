@@ -5,12 +5,10 @@
 # Written by Rian Koja to publish in a GitHub repository with specified licence.
 ########################################################################################################################
 # Standard imports:
-import statistics
+
 import pandas as pd
 from pandas.compat import BytesIO
 import numpy as np
-from scipy.stats import moment
-from scipy.interpolate import interp1d
 from sklearn import cluster
 from sklearn.metrics import silhouette_score
 import matplotlib.pyplot as plt
@@ -18,29 +16,16 @@ import seaborn as sns
 import os
 from tools import createdocument
 
-# This functions takes a series of data, linearly interpolates it to the [0, 1] interval,
-# Then computes its sample statistical moments, returns it in dictionary form to be appended in a data frame.
-def series2datasetline(series):
-    # Normalize to the [0, 1] interval:
-    mapper = interp1d([min(series), max(series)], [0, 1])
-    normalized_series = mapper(series)
-    # Cannot use moment 1 as it would always be zero. Also not used anyway.
-    datasetline = {"mean": statistics.mean(normalized_series),
-                   "variance": moment(normalized_series, moment=2),
-                   "skewness": moment(normalized_series, moment=3),
-                   "kurtosis": moment(normalized_series, moment=4)}
-    return datasetline
+# local imports:
 
 
 # This function stacks several one-line data frames ot create a larger set of desired size.
-def generatedataframe(n, algorithm):
-    column_names = ['mean', 'variance', 'skewness', 'kurtosis']
-    dataframe = pd.DataFrame(columns=column_names)
-    for trial in range(0, 10):  # Gerando 10 sinais.
-        data = pd.DataFrame(series2datasetline(algorithm.generator(n, n / 12)), index=[trial])
-        dataframe = dataframe.append(data, ignore_index=True)
-    # Add column of "N_elements"
-    dataframe['N_elements'] = n
+def generatedataframe(algorithm):
+    df = pd.DataFrame(columns=['mean', 'variance', 'skewness', 'kurtosis', 'Type'])
+    dataframe = algorithm.makedataframe(df)
+    print("DATAFRAMEDATAFRAMEDATAFRAMEDATAFRAMEDATAFRAMEDATAFRAMEDATAFRAMEDATAFRAMEDATAFRAME")
+    print(dataframe)
+    print("DATAFRAMEDATAFRAMEDATAFRAMEDATAFRAMEDATAFRAMEDATAFRAMEDATAFRAMEDATAFRAMEDATAFRAME")
     return dataframe
 
 
@@ -58,10 +43,11 @@ def plot_inertias(df, algorithm, doc_report):
     inertias = []
     silhouette_scores = []
     for ii in range(1, 10):
-        kmean_obj = k_means(df, ii)
+        kmean_obj = k_means(df[['variance', 'skewness', 'kurtosis']], ii)
         inertias.append(kmean_obj.inertia_)
         if ii != 1:
-            silhouette_scores.append(silhouette_score(df, kmean_obj.labels_, metric='euclidean'))
+            silhouette_scores.append(silhouette_score(df[['variance', 'skewness', 'kurtosis']], kmean_obj.labels_,
+                                                      metric='euclidean'))
 
     plt.figure()
     plt.plot(range(1, 10), inertias)
@@ -98,9 +84,7 @@ def plot_inertias(df, algorithm, doc_report):
 def exercises_1_3(algorithm, doc_report):
     print("This is ", __name__, " in ", __file__)
 
-    ex1_df = pd.DataFrame(columns=['mean', 'variance', 'skewness', 'kurtosis', 'N_elements'])
-    for N in [64, 128, 256, 512, 1024, 2048, 4096, 8192]:
-        ex1_df = ex1_df.append(generatedataframe(N, algorithm), ignore_index=True)
+    ex1_df = generatedataframe(algorithm)
 
     # run K-means elbow and silhouette plot:
     selected_k = plot_inertias(ex1_df, algorithm, doc_report)
@@ -116,7 +100,7 @@ def exercises_1_3(algorithm, doc_report):
     # plot heatmap with incidence versus case:
     # Create heatmap:
     plt.figure()
-    cross_tab = pd.crosstab(ex1_df['N_elements'], ex1_df['kmeans'])
+    cross_tab = pd.crosstab(ex1_df['Type'], ex1_df['kmeans'])
     print(cross_tab)
     sns.set()
     sns_plot = sns.heatmap(cross_tab, cmap="YlGnBu", annot=True, cbar=False, fmt="d", square=True, linewidths=0.5)
@@ -134,7 +118,7 @@ def exercises_1_3(algorithm, doc_report):
     doc_report.add_fig(memfile2)
 
     # For comparison, color mark the number of elements
-    sns_plot = sns.pairplot(ex1_df, hue='N_elements', vars=['variance', 'skewness', 'kurtosis'])
+    sns_plot = sns.pairplot(ex1_df, hue='Type', vars=['variance', 'skewness', 'kurtosis'])
     memfile3 = BytesIO()
     plt.savefig(memfile3)
     doc_report.add_fig(memfile3)
@@ -146,7 +130,7 @@ if __name__ == '__main__':
     # Use fixed seed, so results don't change between runs of the same algorithm:
     np.random.seed(82745949)
 
-    # Initnialize report for debbuging:
+    # Initialize report for debugging:
     test_report = createdocument.ReportDocument()
 
     # For questions 1-3, do the same procedure importing a different signal generator:

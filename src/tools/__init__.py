@@ -6,3 +6,4 @@
 from tools.auxfunctions import *
 from tools.createdocument import *
 from tools.graphs import *
+from tools.stat import *
