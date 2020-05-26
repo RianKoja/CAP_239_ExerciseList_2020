@@ -26,9 +26,12 @@ jobs:
         echo "got here" >> here.txt
         ls 
         cd >> here.txt
-        cd src
+        cat here.txt
+        echo "before cd command"
+        cd ./src
         echo "Where am I?"
         ls
+        echo "here I am"
         pip install -r requirements.txt
         pip install flake8 pytest
     - name: Test with pytest
