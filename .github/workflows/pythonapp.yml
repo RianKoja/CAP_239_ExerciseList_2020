@@ -27,6 +27,8 @@ jobs:
         ls 
         cd >> here.txt
         cd src
+        echo "Where am I?"
+        ls
         pip install -r requirements.txt
         pip install flake8 pytest
     - name: Test with pytest
