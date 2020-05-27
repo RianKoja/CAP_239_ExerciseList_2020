@@ -8,10 +8,12 @@
 
 # Standard imports:
 import numpy as np
+import matplotlib.pyplot as plt
 
 # Local imports:
 from tools import createdocument
 from tools import auxfunctions
+from tools import exercise_4_2
 from generators import GRNG
 from generators import colorednoise
 from generators import pmodel
@@ -28,18 +30,24 @@ doc_report.document.add_paragraph("\n\n")
 algorithm1 = GRNG()
 auxfunctions.exercises_1_3(algorithm1, doc_report)
 doc_report.document.add_paragraph("\n\n")
+plt.close('all')
 
 doc_report.document.add_heading("Exercise 2", level=2)
 doc_report.document.add_paragraph("\n\n")
 algorithm2 = colorednoise.coloredgenerator()
 auxfunctions.exercises_1_3(algorithm2, doc_report)
 doc_report.document.add_paragraph("\n\n")
+plt.close('all')
 
 doc_report.document.add_heading("Exercise 3", level=2)
 doc_report.document.add_paragraph("\n\n")
 algorithm3 = pmodel.PModelGenerator()
 auxfunctions.exercises_1_3(algorithm3, doc_report)
 doc_report.document.add_paragraph("\n\n")
+plt.close('all')
+
+# Run for exercise 4.2:
+exercise_4_2.plot_estimates_noises(doc_report)
 
 # Finish the report:
 doc_report.finish()

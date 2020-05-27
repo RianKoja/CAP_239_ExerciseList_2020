@@ -5,7 +5,7 @@
 # Written by Rian Koja to publish in a GitHub repository with specified licence.
 ########################################################################################################################
 # Standard imports:
-
+import warnings
 import pandas as pd
 from pandas.compat import BytesIO
 import numpy as np
@@ -15,17 +15,14 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import os
 from tools import createdocument
-
+from tools import cullen_frey_giovanni
 # local imports:
 
 
 # This function stacks several one-line data frames ot create a larger set of desired size.
 def generatedataframe(algorithm):
-    df = pd.DataFrame(columns=['mean', 'variance', 'skewness', 'kurtosis', 'Type'])
+    df = pd.DataFrame(columns=['mean', 'variance', 'skewness', 'kurtosis', 'skewness_raw', 'kurtosis_raw', 'Type'])
     dataframe = algorithm.makedataframe(df)
-    print("DATAFRAMEDATAFRAMEDATAFRAMEDATAFRAMEDATAFRAMEDATAFRAMEDATAFRAMEDATAFRAMEDATAFRAME")
-    print(dataframe)
-    print("DATAFRAMEDATAFRAMEDATAFRAMEDATAFRAMEDATAFRAMEDATAFRAMEDATAFRAMEDATAFRAMEDATAFRAME")
     return dataframe
 
 
@@ -33,7 +30,9 @@ def k_means(df, k):
     df_reduced = df[['variance', 'skewness', 'kurtosis']]
     np_array = np.array(df_reduced)
     kmeans = cluster.KMeans(n_clusters=k)
-    kmeans.fit(np_array)
+    with warnings.catch_warnings():  # suppress the warning for the case perfect grouping is found before end of loop
+        warnings.filterwarnings("ignore")
+        kmeans.fit(np_array)
     #  labels = kmeans.labels_
     #  centroids = kmeans.cluster_centers_
     return kmeans
@@ -74,35 +73,15 @@ def plot_inertias(df, algorithm, doc_report):
     plt.savefig(memfile)
     doc_report.add_fig(memfile)
 
-    print(silhouette_scores)
-    print("max(silhouette_scores) = " + str(max(silhouette_scores)))
     optimal_k = 2 + silhouette_scores.index(max(silhouette_scores))
     print("For data generated with " + algorithm.name + " the maximum silhouette occurs for " + str(optimal_k) + " clusters")
     return optimal_k
 
 
-def exercises_1_3(algorithm, doc_report):
-    print("This is ", __name__, " in ", __file__)
-
-    ex1_df = generatedataframe(algorithm)
-
-    # run K-means elbow and silhouette plot:
-    selected_k = plot_inertias(ex1_df, algorithm, doc_report)
-
-    ex_kmeans = k_means(ex1_df, selected_k)
-
-    # Add kmeans grouping to data frame:
-    ex1_df['kmeans'] = ex_kmeans.labels_
-
-    # Save in excel for logging/debbuging:
-    ex1_df.to_excel(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'mount', algorithm.name + '_auxfunctions_test.xlsx'))
-
-    # plot heatmap with incidence versus case:
-    # Create heatmap:
+# Create heatmap to check K-means grouping vs. Type:
+def create_heatmap(df, selected_k, doc_report):
     plt.figure()
-    cross_tab = pd.crosstab(ex1_df['Type'], ex1_df['kmeans'])
-    print(cross_tab)
-    sns.set()
+    cross_tab = pd.crosstab(df['Type'], df['kmeans'])
     sns_plot = sns.heatmap(cross_tab, cmap="YlGnBu", annot=True, cbar=False, fmt="d", square=True, linewidths=0.5)
     plt.title("Incidence Matrix obtained from k-means based on \n" + 'N_elements' + " and " + 'kmeans' + " with k=" +
               str(selected_k))
@@ -110,18 +89,49 @@ def exercises_1_3(algorithm, doc_report):
     plt.savefig(memfile)
     doc_report.add_fig(memfile)
 
+
+def plot_cullen_frey(df, alg_name, doc_report):
+    skewnesses_squared = [x*x for x in df['skewness'].astype('float64')]
+    kurtosises = df['kurtosis'].astype('float64').tolist()
+    cullen_frey_giovanni.cullenfrey(skewnesses_squared, kurtosises, alg_name, alg_name)
+    memfile_cf = BytesIO()
+    plt.savefig(memfile_cf)
+    doc_report.add_fig(memfile_cf)
+
+def exercises_1_3(algorithm, doc_report):
+    ex_df = generatedataframe(algorithm)
+
+    # run K-means elbow and silhouette plot:
+    selected_k = plot_inertias(ex_df, algorithm, doc_report)
+
+    ex_kmeans = k_means(ex_df, selected_k)
+
+    # Add kmeans grouping to data frame:
+    ex_df['kmeans'] = ex_kmeans.labels_
+
+    # Save in excel for logging/debbuging:
+    ex_df.to_excel(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'mount', algorithm.name +
+                                '_auxfunctions_test.xlsx'))
+
+    # plot heatmap with incidence versus case:
+    sns.set()
+    create_heatmap(ex_df, selected_k, doc_report)
+
     # Plot the k-means grouping
     plt.figure()
-    sns_plot = sns.pairplot(ex1_df, hue="kmeans", vars=['variance', 'skewness', 'kurtosis'])
+    sns_plot = sns.pairplot(ex_df, hue="kmeans", vars=['variance', 'skewness', 'kurtosis'])
     memfile2 = BytesIO()
     plt.savefig(memfile2)
     doc_report.add_fig(memfile2)
 
     # For comparison, color mark the number of elements
-    sns_plot = sns.pairplot(ex1_df, hue='Type', vars=['variance', 'skewness', 'kurtosis'])
+    sns_plot = sns.pairplot(ex_df, hue='Type', vars=['variance', 'skewness', 'kurtosis'])
     memfile3 = BytesIO()
     plt.savefig(memfile3)
     doc_report.add_fig(memfile3)
+
+    # Plot Cullen-Frey map:
+    plot_cullen_frey(ex_df, algorithm.name, doc_report)
 
 
 # This module is meant to provide functions imported elsewhere, nonetheless, it is useful to run it directly for

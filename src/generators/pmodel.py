@@ -82,12 +82,11 @@ class PModelGenerator:
         self.length = [8192]
         self.types_names = ["exogen", "exogen", "exogen", "endogen", "endogen", "endogen"]
         self.p = [0.20, 0.25, 0.30, 0.34, 0.38, 0.40]
+        self.normalize_flg = False
 
     def generator(self, p, slope):
         ignore, series = pmodel(self.length, p, slope)
-        print("wut")
-        new_df = pd.DataFrame(stat.series2datasetline(series), index=[1])
-        print("LOOOT")
+        new_df = pd.DataFrame(stat.series2datasetline(series, self.normalize_flg), index=[1])
         return new_df
 
     def makedataframe(self, df):
@@ -95,7 +94,7 @@ class PModelGenerator:
             for trial in range(0, 20):  # Gerando 20 sinais.
                 data = self.generator(p, [])
                 data['Type'] = type_name
-                df = df.append(data, ignore_index=True)
+                df = df.append(data, ignore_index=True, sort=False)
         return df
 
 

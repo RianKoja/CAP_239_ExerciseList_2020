@@ -5,6 +5,7 @@
 # Adapted by Rian Koja to publish in a GitHub repository with specified licence.
 ########################################################################################################################
 
+
 # Gerador de Série Temporal Estocástica - V.1.2 por R.R.Rosa
 # Trata-se de um gerador randômico não-gaussiano sem classe de universalidade via PDF.
 # Input: n=número de pontos da série
@@ -16,16 +17,18 @@ import matplotlib.pyplot as plt
 
 from tools import stat
 
+
 class GRNG:
     def __init__(self):
         self.name = 'grng'
         self.N = [64, 128, 256, 512, 1024, 2048, 4096, 8192]
+        self.normalize_flg = True
 
     def generator(self, points, resolution):
         df = pd.DataFrame(np.random.randn(points) * sqrt(resolution / points)).cumsum()
         #  df = pd.Series(np.random.randn(no) * sqrt(re) * sqrt(1 / 128.)).cumsum()
         ret = df[0].tolist()
-        new_df = pd.DataFrame(stat.series2datasetline(ret), index=[1])
+        new_df = pd.DataFrame(stat.series2datasetline(ret, self.normalize_flg), index=[1])
         return new_df
 
     def makedataframe(self, df):
@@ -33,7 +36,7 @@ class GRNG:
             for trial in range(0, 10):  # Gerando 10 sinais.
                 data = self.generator(N, N / 12)
                 data['Type'] = N
-                df = df.append(data, ignore_index=True)
+                df = df.append(data, ignore_index=True, sort=False)
         return df
 
 

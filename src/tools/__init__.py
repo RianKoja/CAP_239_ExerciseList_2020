@@ -7,3 +7,5 @@ from tools.auxfunctions import *
 from tools.createdocument import *
 from tools.graphs import *
 from tools.stat import *
+from tools.cullen_frey_giovanni import *
+from tools.soc import *

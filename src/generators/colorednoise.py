@@ -87,7 +87,8 @@ def powerlaw_psd_gaussian(exponent, size, fmin=0):
 
     # If the signal length is even, frequencies +/- 0.5 are equal
     # so the coefficient must be real.
-    if not (samples % 2): si[..., -1] = 0
+    if not samples % 2:
+        si[..., -1] = 0
 
     # Regardless of signal length, the DC component must be real
     si[..., 0] = 0
@@ -107,10 +108,11 @@ class coloredgenerator:
         self.length = [8192]
         self.types_names = ["white", "pink", "red"]
         self.types_beta = [0, 1, 2]
+        self.normalize_flg = False
 
     def generator(self, points, exponent):
         series = powerlaw_psd_gaussian(exponent, points)
-        new_df = pd.DataFrame(stat.series2datasetline(series), index=[1])
+        new_df = pd.DataFrame(stat.series2datasetline(series, self.normalize_flg), index=[1])
         return new_df
 
     def makedataframe(self, df):
@@ -118,7 +120,7 @@ class coloredgenerator:
             for trial in range(0, 30):  # Gerando 30 sinais.
                 data = self.generator(self.length, exponent)
                 data['Type'] = name
-                df = df.append(data, ignore_index=True)
+                df = df.append(data, ignore_index=True, sort=False)
         return df
 
 
