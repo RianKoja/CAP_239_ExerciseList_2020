@@ -1,7 +1,13 @@
+########################################################################################################################
+# Used to compute statisticas parameters of data, used in several exercises, such as skewness and kurtosis.
+#
+# Written by Rian Koja to publish in a GitHub repository with specified licence.
+########################################################################################################################
 
 
-import statistics
-from scipy.stats import moment
+# Standard imports:
+from statistics import mean, variance
+from scipy.stats import moment, skew, kurtosis
 from scipy.interpolate import interp1d
 
 
@@ -14,10 +20,10 @@ def series2datasetline(series, normalize):
     else:
         normalized_series = series
 
-    # Cannot use moment 1 as it would always be zero. Also not used anyway.
-    datasetline = {"mean": statistics.mean(normalized_series),
-                   "variance": moment(normalized_series, moment=2),
-                   "skewness": moment(normalized_series, moment=3),
-                   "kurtosis": moment(normalized_series, moment=4),
+    # Return as dictionary, so it's simple to append to pandas dataframe:
+    datasetline = {"mean": mean(normalized_series),
+                   "variance": variance(normalized_series),
+                   "skewness": skew(normalized_series),
+                   "kurtosis": kurtosis(normalized_series, fisher=False),
                    "Type": None}
     return datasetline

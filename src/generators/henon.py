@@ -9,6 +9,11 @@ import matplotlib.pyplot as plt
 
 # 2D Henon logistic map is noise-like with "a" in (1.350,1.420) and "b" in (0.210,0.310)
 def henon_map(a, b, x, y):
+    # I ran into a divergence problem. So if this happens, it's nice to print the values of the parameters and quit:
+    if x > 100 or x < -100 or y > 100 or y < -100:
+        print("a =", a, "b =", b)
+        print("Divergence detected in Henon map, consider changing parameters.")
+        raise SystemExit
     return y + 1.0 - a * x * x, b * x
 
 

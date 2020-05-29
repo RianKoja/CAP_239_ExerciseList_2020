@@ -4,6 +4,7 @@ from scipy.stats import genextreme, norm
 import seaborn as sns
 from pandas.compat import BytesIO
 
+
 # Example usage:
 def plot_ks_gev_gauss(data_sample, alg_name):
     data_min = min(data_sample)
@@ -51,7 +52,7 @@ def plot_ks_gev_gauss(data_sample, alg_name):
 
 def plot_estimates_noises(doc):
     from generators.colorednoise import powerlaw_psd_gaussian
-    doc.document.add_heading('Exercise 4.2', level=0)
+    doc.document.add_heading('Exercise 4.2', level=2)
     doc.document.add_paragraph("""
     Here we compare different methods of estimating a probability density function from sampled data.
     The first is to use Kernel Density Estimation, a standard method to compose a PDF as a pondered sum of PDF's centered at each observed point.

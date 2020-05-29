@@ -13,7 +13,6 @@
 
 import numpy as np
 import pandas as pd
-#from matplotlib import pyplot
 import matplotlib.pyplot as plt
 
 # Local imports:
@@ -81,7 +80,7 @@ class PModelGenerator:
         self.name = "P-Model"
         self.length = [8192]
         self.types_names = ["exogen", "exogen", "exogen", "endogen", "endogen", "endogen"]
-        self.p = [0.20, 0.25, 0.30, 0.34, 0.38, 0.40]
+        self.p = [0.20, 0.22, 0.27, 0.34, 0.38, 0.40]
         self.normalize_flg = False
 
     def generator(self, p, slope):
@@ -101,21 +100,21 @@ class PModelGenerator:
 if __name__ == '__main__':
 
     # Endogenous (setup: N, p: 0.32-0.42, beta=0.4)
-    x, y = pmodel(256, 0.32, 0.4)
-    y = y-1
+    _, yp = pmodel(256, 0.32, 0.4)
+    yp = yp - 1
     plt.figure()
-    plt.plot(y)
+    plt.plot(yp)
     plt.title("Endogenous Series")
-    plt.ylabel("Valores de Amplitude")
-    plt.xlabel("N passos no tempo")
+    plt.ylabel("Amplitude Values")
+    plt.xlabel("Time steps")
     plt.draw()
 
     # Exogenous (setup: N, p: 0.18-0.28, beta=0.7)
-    x, y = pmodel(256, 0.18, 0.7)
-    y = y-1
+    _, yp = pmodel(256, 0.18, 0.7)
+    yp = yp - 1
     plt.figure()
-    plt.plot(y)
+    plt.plot(yp)
     plt.title("Exogenous Series")
-    plt.ylabel("Valores de Amplitude")
-    plt.xlabel("N passos no tempo")
+    plt.ylabel("Amplitude Values")
+    plt.xlabel("Time steps")
     plt.show()

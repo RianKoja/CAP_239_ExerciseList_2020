@@ -91,12 +91,13 @@ def create_heatmap(df, selected_k, doc_report):
 
 
 def plot_cullen_frey(df, alg_name, doc_report):
-    skewnesses_squared = [x*x for x in df['skewness'].astype('float64')]
+    skewnesses = df['skewness'].astype('float64').tolist()
     kurtosises = df['kurtosis'].astype('float64').tolist()
-    cullen_frey_giovanni.cullenfrey(skewnesses_squared, kurtosises, alg_name, alg_name)
+    cullen_frey_giovanni.cullenfrey(skewnesses, kurtosises, alg_name, alg_name)
     memfile_cf = BytesIO()
     plt.savefig(memfile_cf)
     doc_report.add_fig(memfile_cf)
+
 
 def exercises_1_3(algorithm, doc_report):
     ex_df = generatedataframe(algorithm)

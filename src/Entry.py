@@ -12,11 +12,8 @@ import matplotlib.pyplot as plt
 
 # Local imports:
 from tools import createdocument
-from tools import auxfunctions
-from tools import exercise_4_2
-from generators import GRNG
-from generators import colorednoise
-from generators import pmodel
+from exercises import exercise_5, exercise_4_2, exercise_1_to_4_1
+from generators import GRNG, colorednoise, pmodel
 
 print("Starting ", __file__)
 # Use fixed seed, so results don't change between runs of the same algorithm:
@@ -28,26 +25,30 @@ doc_report = createdocument.ReportDocument()
 doc_report.document.add_heading("Exercise 1", level=2)
 doc_report.document.add_paragraph("\n\n")
 algorithm1 = GRNG()
-auxfunctions.exercises_1_3(algorithm1, doc_report)
+exercise_1_to_4_1.exercises_1_3(algorithm1, doc_report)
 doc_report.document.add_paragraph("\n\n")
 plt.close('all')
 
 doc_report.document.add_heading("Exercise 2", level=2)
 doc_report.document.add_paragraph("\n\n")
 algorithm2 = colorednoise.coloredgenerator()
-auxfunctions.exercises_1_3(algorithm2, doc_report)
+exercise_1_to_4_1.exercises_1_3(algorithm2, doc_report)
 doc_report.document.add_paragraph("\n\n")
 plt.close('all')
 
 doc_report.document.add_heading("Exercise 3", level=2)
 doc_report.document.add_paragraph("\n\n")
 algorithm3 = pmodel.PModelGenerator()
-auxfunctions.exercises_1_3(algorithm3, doc_report)
+exercise_1_to_4_1.exercises_1_3(algorithm3, doc_report)
 doc_report.document.add_paragraph("\n\n")
 plt.close('all')
 
 # Run for exercise 4.2:
 exercise_4_2.plot_estimates_noises(doc_report)
+
+# Run for exercise 5:
+exercise_5.report_ex5(doc_report)
+plt.close('all')
 
 # Finish the report:
 doc_report.finish()

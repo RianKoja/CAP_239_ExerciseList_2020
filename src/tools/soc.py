@@ -11,7 +11,7 @@ def SOC(data, n_bins=50):
     var = np.var(data)
     std = np.std(data)
     # print("mean: ", mean, " var: ", var)
-    """ Computa a Taxa Local de Flutuação para cada valor da ST """
+    # Computa a Taxa Local de Flutuação para cada valor da ST
     gamma = []
 
     for i in range(0, n):  # gamma.append((data[i] - mean)/var)
@@ -27,36 +27,39 @@ def SOC(data, n_bins=50):
     return prob_gamma, this_counts
 
 
-# Modulo 2 ############################
-if __name__ == '__main__':
-    data = np.genfromtxt(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'mount', 'data.txt'))
-
-    Prob_Gamma, counts = SOC(data)
+def soc_plot(data, plot_title="Sample Self-Organized Criticality Plot"):
+    prob_gamma, counts = SOC(data)
 
     x = np.linspace(1, len(counts), len(counts))
 
-    log_Prob = np.log10(Prob_Gamma)
+    log_prob = np.log10(prob_gamma)
     log_counts = np.log10(counts)
 
-    p = np.array(Prob_Gamma)
+    p = np.array(prob_gamma)
     p = p[np.nonzero(p)]
     c = counts[np.nonzero(counts)]
     log_p = np.log10(p)
     log_c = np.log10(c)
 
     a = (log_p[np.argmax(c)] - log_p[np.argmin(c)]) / (np.max(c) - np.min(c))
-    b = log_Prob[0]
+    b = log_prob[0]
     y = b * np.power(10, (a * counts))
 
-    # Plotagem
+    # Plotting:
     plt.clf()
     plt.scatter(np.log10(counts), y, marker=".", color="blue")
 
-    plt.title('SOC', fontsize=16)
+    plt.title(plot_title, fontsize=16)
     plt.xlabel('log(ni)')
     plt.ylabel('log(Yi)')
     plt.grid()
+    plt.draw()
 
-    # plt.savefig('s7plot_novo.pdf')
+
+# sample executions:
+if __name__ == '__main__':
+    test_mean, test_cov = [1, -1], [(1, .5), (.5, 1)]
+    test_data, _ = np.random.multivariate_normal(test_mean, test_cov, size=800).T
+
+    soc_plot(test_data)
     plt.show()
-

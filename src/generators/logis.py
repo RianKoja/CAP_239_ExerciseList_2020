@@ -20,6 +20,9 @@ def logistic_series(rho, tau, n_points, x_init=0.001, y_init=0.001):
 
     for i in range(1, n_points):
         xtemp, ytemp = logistic(rho, tau, xtemp, ytemp)
+        if xtemp > 100 or xtemp < -100 or ytemp > 100 or ytemp < -100:
+            print("xtemp = ", xtemp, "ytemp = ", ytemp, "rho =", rho, "tau =", tau)
+            raise SystemExit
         x.append(xtemp)
         y.append(ytemp)
 

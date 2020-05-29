@@ -1,10 +1,6 @@
 # Standard imports:
-import pandas as pd
-import os
 import matplotlib.pyplot as plt
-import seaborn as sns
 import numpy as np
-import sklearn
 from sklearn import cluster
 
 def k_means_graph(ticker1, ticker2, df, k):
