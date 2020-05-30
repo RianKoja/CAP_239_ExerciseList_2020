@@ -1,3 +1,6 @@
 [submodule "Python-Docker"]
 	path = Python-Docker
 	url = https://github.com/RianKoja/Python-Docker
+[submodule "waipy"]
+	path = src/tools/waipy
+	url = https://github.com/mabelcalim/waipy
