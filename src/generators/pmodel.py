@@ -3,13 +3,13 @@
 #
 # Adapted from https://github.com/reinaldo-rosa-inpe/cap239
 #
-# Written by Rian Koja to publish in a GitHub repository with specified licence.
+# Adapted by Rian Koja to publish in a GitHub repository with specified licence.
 ########################################################################################################################
 
-#P-model from Meneveau & Sreenevasan, 1987 & Malara et al., 2016
-#Author: R.R.Rosa & N. Joshi
-#Version: 1.6
-#Date: 11/04/2018
+# P-model from Meneveau & Sreenevasan, 1987 & Malara et al., 2016
+# Author: R.R.Rosa & N. Joshi
+# Version: 1.6
+# Date: 11/04/2018
 
 import numpy as np
 import pandas as pd
@@ -20,23 +20,23 @@ from tools import stat
 
 
 def pmodel(no_values, p, slope=[]):
-    noOrders = int(np.ceil(np.log2(no_values)))
-    noValuesGenerated = 2**noOrders
+    no_orders = int(np.ceil(np.log2(no_values)))
+    no_values_generated = 2**no_orders
     
     y = np.array([1])
-    for n in range(noOrders):
+    for n in range(no_orders):
         y = next_step_1d(y, p)
     
     if slope:
-        fourierCoeff = fractal_spectrum_1d(no_values, slope / 2)
-        meanVal = np.mean(y)
+        fourier_coeff = fractal_spectrum_1d(no_values, slope / 2)
+        mean_val = np.mean(y)
         stdy = np.std(y)
-        x = np.fft.ifft(y - meanVal)
+        x = np.fft.ifft(y - mean_val)
         phase = np.angle(x)
-        x = fourierCoeff*np.exp(1j*phase)
+        x = fourier_coeff*np.exp(1j*phase)
         x = np.fft.fft(x).real
         x *= stdy/np.std(x)
-        x += meanVal
+        x += mean_val
         ret_x = x
         ret_y = y
     else:
