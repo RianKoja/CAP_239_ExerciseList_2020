@@ -8,3 +8,7 @@ from tools.graphs import *
 from tools.stat import *
 from tools.cullen_frey_giovanni import *
 from tools.soc import *
+from tools.mfdfa_ss_m1 import *
+from tools.mfdfa_ss_m2 import *
+from tools.mfdfa_ss_m3 import *
+from tools.mfdfa_ss import *

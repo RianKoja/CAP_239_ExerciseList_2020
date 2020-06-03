@@ -7,7 +7,7 @@
 
 # Standard imports:
 from statistics import mean, variance
-from scipy.stats import moment, skew, kurtosis
+from scipy.stats import skew, kurtosis
 from scipy.interpolate import interp1d
 
 

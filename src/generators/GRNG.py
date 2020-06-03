@@ -18,16 +18,20 @@ import matplotlib.pyplot as plt
 from tools import stat
 
 
-class GRNG:
+def time_series(points, resolution):
+    aux = np.random.randn(points) * sqrt(resolution / points)
+    return aux.cumsum()
+
+
+class Grng:
     def __init__(self):
         self.name = 'grng'
         self.N = [64, 128, 256, 512, 1024, 2048, 4096, 8192]
         self.normalize_flg = True
 
     def generator(self, points, resolution):
-        df = pd.DataFrame(np.random.randn(points) * sqrt(resolution / points)).cumsum()
         #  df = pd.Series(np.random.randn(no) * sqrt(re) * sqrt(1 / 128.)).cumsum()
-        ret = df[0].tolist()
+        ret = time_series(points, resolution)
         new_df = pd.DataFrame(stat.series2datasetline(ret, self.normalize_flg), index=[1])
         return new_df
 
@@ -46,8 +50,8 @@ if __name__ == "__main__":
     res = n/12
 
     # Generate data
-    generator = GRNG()
-    a = GRNG().generator(n, res)
+    generator = Grng()
+    a = Grng().generator(n, res)
 
     # Create figures:
     plt.figure()

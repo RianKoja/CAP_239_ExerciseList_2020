@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn import cluster
 
+
 def k_means_graph(ticker1, ticker2, df, k):
     # based on https://www.springboard.com/blog/data-mining-python-tutorial/
     df_reduced = df[[ticker1, ticker2]].dropna()

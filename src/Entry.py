@@ -12,8 +12,8 @@ import matplotlib.pyplot as plt
 
 # Local imports:
 from tools import createdocument
-from exercises import exercise_5, exercise_4_2, exercise_1_to_4_1
-from generators import GRNG, colorednoise, pmodel
+from exercises import exercise_1_to_4_1, exercise_4_2, exercise_5, exercise_8
+from generators import Grng, colorednoise, pmodel
 
 print("Starting ", __file__)
 # Use fixed seed, so results don't change between runs of the same algorithm:
@@ -24,7 +24,7 @@ doc_report = createdocument.ReportDocument()
 # Run the script for exercises 1 to 3:
 doc_report.document.add_heading("Exercise 1", level=2)
 doc_report.document.add_paragraph("\n\n")
-algorithm1 = GRNG()
+algorithm1 = Grng()
 exercise_1_to_4_1.exercises_1_3(algorithm1, doc_report)
 doc_report.document.add_paragraph("\n\n")
 plt.close('all')
@@ -49,6 +49,11 @@ exercise_4_2.plot_estimates_noises(doc_report)
 # Run for exercise 5:
 exercise_5.report_ex5(doc_report)
 plt.close('all')
+
+# Run for exercise 8:
+exercise_8.run(doc_report)
+plt.close('all')
+
 
 # Finish the report:
 doc_report.finish()

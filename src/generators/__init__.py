@@ -4,4 +4,4 @@
 # Written by Rian Koja to publish in a GitHub repository with specified licence.
 ########################################################################################################################
 from generators.colorednoise import *
-from generators.GRNG import *
+from generators.grng import *
