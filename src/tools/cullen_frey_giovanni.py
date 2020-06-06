@@ -11,12 +11,12 @@ from matplotlib.patches import Polygon
 def cullenfrey(skews, kurt, legend, title):
     xd = [s*s for s in skews]
     yd = kurt
-    maior = max(xd)
-    poly_x1 = maior if maior > 4.4 else 4.4
+    maior = max(xd) * 1.1
+    poly_x1 = maior if maior > 4 else 4
     poly_y1 = poly_x1 + 1
     poly_y2 = 3/2.*poly_x1 + 3
     y_lim = poly_y2 if poly_y2 > 10 else 10
-    y_lim = max([y_lim, max(yd)])
+    y_lim = max([y_lim, max(yd) * 1.1])
 
     x = [0, poly_x1, poly_x1, 0]
     y = [1, poly_y1, poly_y2, 3]
