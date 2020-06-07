@@ -22,63 +22,63 @@
 import numpy as np
 
 
-def getScalingExponents(timeMeasure, dataMeasure):
+def get_scaling_exponents(time_measure, data_measure):
     # Initialisation
-    nScales = len(timeMeasure)
+    n_scales = len(time_measure)
     
-    log10tm = np.log10(timeMeasure)
-    log10dm = np.log10(dataMeasure)
+    log10tm = np.log10(time_measure)
+    log10dm = np.log10(data_measure)
     
     res = 1.0e+07
-    bs_index = nScales
+    bs_index = n_scales
     
     # Computing
     # We find linear approximations for major and minor subsets of the data measure and determine the index of the
     # boundary scale at which the approximations are optimal in the sense of best fitting to the data measure
-    for i in range(3, nScales - 2 + 1):
+    for i in range(3, n_scales - 2 + 1):
         # Major 'i' scales are approximated by the function 'k * x + b' ...
-        curr_log10tm = log10tm[nScales - i + 1 - 1 : nScales]
-        curr_log10dm = log10dm[nScales - i + 1 - 1 : nScales]
-        detA = i * np.sum(curr_log10tm ** 2.0) - np.sum(curr_log10tm) ** 2.0
-        detK = i * np.sum(np.multiply(curr_log10tm, curr_log10dm)) - np.sum(curr_log10tm) * np.sum(curr_log10dm)
-        detB = np.sum(curr_log10dm) * np.sum(curr_log10tm ** 2.0) - np.sum(curr_log10tm) * np.sum(np.multiply(curr_log10tm, curr_log10dm))
-        k = detK / detA
-        b = detB / detA
+        curr_log10tm = log10tm[n_scales - i + 1 - 1 : n_scales]
+        curr_log10dm = log10dm[n_scales - i + 1 - 1 : n_scales]
+        det_a = i * np.sum(curr_log10tm ** 2.0) - np.sum(curr_log10tm) ** 2.0
+        det_k = i * np.sum(np.multiply(curr_log10tm, curr_log10dm)) - np.sum(curr_log10tm) * np.sum(curr_log10dm)
+        det_b = np.sum(curr_log10dm) * np.sum(curr_log10tm ** 2.0) - np.sum(curr_log10tm) * np.sum(np.multiply(curr_log10tm, curr_log10dm))
+        k = det_k / det_a
+        b = det_b / det_a
         # ... and the maximum residual is computed
-        resMajor = max(np.abs(k * curr_log10tm + b - curr_log10dm))
+        res_major = max(np.abs(k * curr_log10tm + b - curr_log10dm))
         
-        # Minor 'nScales - i + 1' scales are approximated by the function 'k * x + b' ...
-        curr_log10tm = log10tm[1 - 1 : nScales - i + 1]
-        curr_log10dm = log10dm[1 - 1 : nScales - i + 1]
-        detA = (nScales - i + 1) * np.sum(curr_log10tm ** 2.0) - np.sum(curr_log10tm) ** 2.0
-        detK = (nScales - i + 1) * np.sum(np.multiply(curr_log10tm, curr_log10dm)) - np.sum(curr_log10tm) * np.sum(curr_log10dm)
-        detB = np.sum(curr_log10dm) * np.sum(curr_log10tm ** 2.0) - np.sum(curr_log10tm) * np.sum(np.multiply(curr_log10tm, curr_log10dm))
-        k = detK / detA
-        b = detB / detA
+        # Minor 'n_scales - i + 1' scales are approximated by the function 'k * x + b' ...
+        curr_log10tm = log10tm[1 - 1: n_scales - i + 1]
+        curr_log10dm = log10dm[1 - 1: n_scales - i + 1]
+        det_a = (n_scales - i + 1) * np.sum(curr_log10tm ** 2.0) - np.sum(curr_log10tm) ** 2.0
+        det_k = (n_scales - i + 1) * np.sum(np.multiply(curr_log10tm, curr_log10dm)) - np.sum(curr_log10tm) * np.sum(curr_log10dm)
+        det_b = np.sum(curr_log10dm) * np.sum(curr_log10tm ** 2.0) - np.sum(curr_log10tm) * np.sum(np.multiply(curr_log10tm, curr_log10dm))
+        k = det_k / det_a
+        b = det_b / det_a
         # ... and the maximum residual is computed
-        resMinor = max(np.abs(k * curr_log10tm + b - curr_log10dm))
+        res_minor = max(np.abs(k * curr_log10tm + b - curr_log10dm))
         
-        if (resMajor ** 2.0 + resMinor ** 2.0 < res):
-            res = resMajor ** 2.0 + resMinor ** 2.0
+        if res_major ** 2.0 + res_minor ** 2.0 < res:
+            res = res_major ** 2.0 + res_minor ** 2.0
             bs_index = i
 
     # Now we determine the boundary scale and the boundary scale's data measure, ...
-    bScale = 2.0 * timeMeasure[1 - 1] / timeMeasure[nScales - bs_index + 1 - 1] / 2.0
-    bDM = dataMeasure[nScales - bs_index + 1 - 1]
+    b_scale = 2.0 * time_measure[1 - 1] / time_measure[n_scales - bs_index + 1 - 1] / 2.0
+    b_dm = data_measure[n_scales - bs_index + 1 - 1]
     # ... as well as compute the unifractal dimensions using the boundary scale's index:
     # at the major 'bs_index' scales ...
-    curr_log10tm = log10tm[nScales - bs_index + 1 - 1 : nScales]
-    curr_log10dm = log10dm[nScales - bs_index + 1 - 1 : nScales]
-    detA = bs_index * np.sum(curr_log10tm ** 2.0) - np.sum(curr_log10tm) ** 2.0
-    detK = bs_index * np.sum(np.multiply(curr_log10tm, curr_log10dm)) - np.sum(curr_log10tm) * np.sum(curr_log10dm)
-    DMajor = detK / detA
-    HMajor = -DMajor
-    # ... and at the minor 'nScales - bs_index + 1' scales
-    curr_log10tm = log10tm[1 - 1 : nScales - bs_index + 1]
-    curr_log10dm = log10dm[1 - 1 : nScales - bs_index + 1]
-    detA = (nScales - bs_index + 1) * np.sum(curr_log10tm ** 2.0) - np.sum(curr_log10tm) ** 2.0
-    detK = (nScales - bs_index + 1) * np.sum(np.multiply(curr_log10tm, curr_log10dm)) - np.sum(curr_log10tm) * np.sum(curr_log10dm)
-    DMinor = detK / detA
-    HMinor = -DMinor
+    curr_log10tm = log10tm[n_scales - bs_index + 1 - 1 : n_scales]
+    curr_log10dm = log10dm[n_scales - bs_index + 1 - 1 : n_scales]
+    det_a = bs_index * np.sum(curr_log10tm ** 2.0) - np.sum(curr_log10tm) ** 2.0
+    det_k = bs_index * np.sum(np.multiply(curr_log10tm, curr_log10dm)) - np.sum(curr_log10tm) * np.sum(curr_log10dm)
+    d_major = det_k / det_a
+    h_major = -d_major
+    # ... and at the minor 'n_scales - bs_index + 1' scales
+    curr_log10tm = log10tm[1 - 1: n_scales - bs_index + 1]
+    curr_log10dm = log10dm[1 - 1: n_scales - bs_index + 1]
+    det_a = (n_scales - bs_index + 1) * np.sum(curr_log10tm ** 2.0) - np.sum(curr_log10tm) ** 2.0
+    det_k = (n_scales - bs_index + 1) * np.sum(np.multiply(curr_log10tm, curr_log10dm)) - np.sum(curr_log10tm) * np.sum(curr_log10dm)
+    d_minor = det_k / det_a
+    h_minor = -d_minor
     
-    return [bScale, bDM, bs_index, HMajor, HMinor]
+    return [b_scale, b_dm, bs_index, h_major, h_minor]

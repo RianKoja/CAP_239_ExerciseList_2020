@@ -19,7 +19,7 @@ def main(dx):
     # Modified first-order DFA
     [time_measure, mean_data_measure, scales] = mfdfa1.getHurstByUpscaling(dx)
 
-    [b_scale, b_dm, bs_index, h_major, h_minor] = mfdfa3.getScalingExponents(time_measure, mean_data_measure)
+    [b_scale, b_dm, bs_index, h_major, h_minor] = mfdfa3.get_scaling_exponents(time_measure, mean_data_measure)
 
     # Modified first-order MF-DFA
     [_, data_measure, _, stats, q] = mfdfa2.get_mss_by_upscaling(dx, is_normalised=1)
