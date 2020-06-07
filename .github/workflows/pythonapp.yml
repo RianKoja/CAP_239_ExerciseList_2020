@@ -28,7 +28,7 @@ jobs:
         echo "here I am"
         pip3 install --quiet -r requirements.txt
         echo "potato"
-    - name: Execute scripts for testing:
+    - name: Execute scripts for testing
       run: |
         cd ./src
         ls
