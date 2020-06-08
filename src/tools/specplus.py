@@ -264,7 +264,7 @@ def main(data):
     plt.savefig(img_filename, dpi=300, bbox_inches='tight', pad_inches=0.1)
     plt.draw()
 
-    return alfa, beta_theoretical
+    return alfa, beta_theoretical, beta
 
 
 # Sample execution:
@@ -272,5 +272,5 @@ if __name__ == "__main__":
     mean, cov = [1, -1], [(1, .5), (.5, 1)]
     series_x, series_y = np.random.multivariate_normal(mean, cov, size=800).T
     test_data = series_x.tolist()
-    alpha, beta_t = main(test_data)
+    alpha, beta_t, beta = main(test_data)
     plt.show()

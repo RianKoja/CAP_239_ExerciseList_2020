@@ -32,6 +32,7 @@ def henon_series(a, b, n, x_init=0.1, y_init=0.3):
     return x, y
 
 
+# Sample execution:
 if __name__ == '__main__':
     # Map dependent parameters
     aa = 1.40

@@ -15,7 +15,7 @@ import seaborn as sns
 
 # This functions takes a series of data, linearly interpolates it to the [0, 1] interval,
 # Then computes its sample statistical moments, returns it in dictionary form to be appended in a data frame.
-def series2datasetline(series, normalize):
+def series2datasetline(series, normalize=False):
     if normalize:  # Normalize to the [0, 1] interval:
         mapper = interp1d([min(series), max(series)], [0, 1])
         normalized_series = mapper(series)

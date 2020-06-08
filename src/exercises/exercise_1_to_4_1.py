@@ -16,7 +16,6 @@ import seaborn as sns
 import os
 from tools import createdocument
 from tools import cullen_frey_giovanni
-# local imports:
 
 
 # This function stacks several one-line data frames ot create a larger set of desired size.

@@ -44,7 +44,7 @@ def cullenfrey(skews, kurt, legend, title):
     plt.xlabel("Skewness²")
     plt.title(title + ": Cullen and Frey map")
     plt.ylabel("Kurtosis")
-    #plt.savefig((title + legend + "cullenfrey.png").replace(" ", "_"))
+    # plt.savefig((title + legend + "cullenfrey.png").replace(" ", "_"))
     plt.draw()
 
 

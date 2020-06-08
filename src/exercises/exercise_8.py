@@ -29,12 +29,7 @@ def run(doc_report):
     # lambda: np.array(henon.henon_series(1.38, 0.22, 8192 - 1)[1], dtype=np.float32),
     full_names = ('Non Gaussian Random Generator', 'Colored Noise Generator', 'P-Model', 'Logistic Map')  # 'Henon Map'
     for (name, func, full_name) in zip(names, generators, full_names):
-        print("Running for", name)
         data = func()
-        print(type(data))
-        print(data)
-        print(len(data))
-
         doc_report.document.add_heading(full_name, level=3)
 
         fig_name = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'mount', name + '_waipy')
