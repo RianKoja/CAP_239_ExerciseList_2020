@@ -26,7 +26,7 @@
 #
 # The end user is granted perpetual permission to reproduce, adapt, and/or distribute this code, provided that
 # an appropriate link is given to the original repository it was downloaded from.
-
+import sys
 import numpy as np
 
 
@@ -52,7 +52,7 @@ def get_mss_by_upscaling(dx, norm_type=np.inf, is_dfa=1, is_normalised=1):
     dx_shift = np.int(dx_len / 2)
 
     n_scales = np.int(np.round(np.log2(
-        dx_len)))  # Number of scales involved. P.S. We use 'round()' to prevent possible malcomputing of the logarithms
+        dx_len)))  # Number of scales involved. P.ss. We use 'round()' to prevent possible malcomputing of the logarithms
     j = 2 ** (np.arange(1, n_scales + 1) - 1) - 1
 
     data_measure = np.zeros((nq, n_scales))
@@ -66,8 +66,8 @@ def get_mss_by_upscaling(dx, norm_type=np.inf, is_dfa=1, is_normalised=1):
         dx_left_shift = np.int(dx_k_len / 2)
         dx_right_shift = np.int(dx_k_len / 2)
 
-        R = np.zeros(n)
-        S = np.ones(n)
+        rr = np.zeros(n)
+        ss = np.ones(n)
         for k in range(1, n + 1):
             # We get a portion of the data of the length '2*(j(ji)+1)' plus the data from the left and right boundaries
             dx_k_with_shifts = dx[(k - 1) * dx_k_len + 1 + dx_shift - dx_left_shift - 1:
@@ -82,19 +82,19 @@ def get_mss_by_upscaling(dx, norm_type=np.inf, is_dfa=1, is_normalised=1):
 
             # Finally we compute the range ...
             if norm_type == 0:
-                R[k - 1] = np.max(r[2 - 1:]) - np.min(r[2 - 1:])
+                rr[k - 1] = np.max(r[2 - 1:]) - np.min(r[2 - 1:])
             elif np.isinf(norm_type):
-                R[k - 1] = np.max(np.abs(r[2 - 1:]))
+                rr[k - 1] = np.max(np.abs(r[2 - 1:]))
             else:
-                R[k - 1] = (np.sum(r[2 - 1:] ** norm_type) / len(r[2 - 1:])) ** (1.0 / norm_type)
+                rr[k - 1] = (np.sum(r[2 - 1:] ** norm_type) / len(r[2 - 1:])) ** (1.0 / norm_type)
             # ... and the normalisation factor ("standard deviation")
             if is_dfa == 0:
-                S[k - 1] = np.sqrt(np.sum(np.abs(np.diff(r)) ** 2.0) / (len(r) - 1))
+                ss[k - 1] = np.sqrt(np.sum(np.abs(np.diff(r)) ** 2.0) / (len(r) - 1))
 
-        if is_normalised == 1:  # Then we either normalise the R / S values, treating them as probabilities ...
-            p = np.divide(R, S) / np.sum(np.divide(R, S))
+        if is_normalised == 1:  # Then we either normalise the rr / ss values, treating them as probabilities ...
+            p = np.divide(rr, ss) / np.sum(np.divide(rr, ss))
         else:  # ... or leave them unnormalised ...
-            p = np.divide(R, S)
+            p = np.divide(rr, ss)
         # ... and compute the measures in the q-norms
         for k in range(1, n + 1):
             # This 'if' is needed to prevent measure blow-ups with
@@ -116,6 +116,8 @@ def get_mss_by_upscaling(dx, norm_type=np.inf, is_dfa=1, is_normalised=1):
     tau = np.zeros((nq, 1))
     log10tm = np.log10(time_measure)
     log10dm = np.log10(data_measure)
+    log10dm[log10dm == -np.inf] = sys.float_info.min
+    log10dm[log10dm == +np.inf] = sys.float_info.max
     log10tm_mean = np.mean(log10tm)
 
     # For each value of the q-norm we compute the mean 'tau' over all the scales

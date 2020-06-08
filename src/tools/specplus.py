@@ -8,9 +8,6 @@
 # Adapted by Rian Koja to publish in a GitHub repository with GPL licence for this specific file.
 ########################################################################################################################
 
-# ------------------------------------------------------------------------
-# Specplus.pyplot
-# ------------------------------------------------------------------------
 import matplotlib.pyplot as plt
 import matplotlib.mlab as mlab
 from scipy import stats, optimize
@@ -22,13 +19,15 @@ import math
 # Computes PSD of a time series
 # Optionally receives an interval for the linear regression step
 # ---------------------------------------------------------------------
-def psd(data, init=0, final=None):
+def psd(data, init=None, final=None):
     n = len(data)
     time = np.arange(n)
 
     # If "final" is not given, use length of data
     if final is None:
-        final = n
+        final = n - 1
+    if init is None:
+        init = 1
 
     # Define sampling frequency:
     dt = (time[-1] - time[0] / (n - 1))
@@ -37,7 +36,7 @@ def psd(data, init=0, final=None):
     # Compute PSD with MLAB:
     power, freqs = mlab.psd(data, Fs=fs, NFFT=n, scale_by_freq=False)
 
-    # Select data within selction interval
+    # Select data within selection interval
     xdata = freqs[init:final]
     ydata = power[init:final]
 
@@ -51,7 +50,7 @@ def psd(data, init=0, final=None):
     logyerr = yerr / ydata
 
     # Compute line fit:
-    pinit = [1.0, -1.0]
+    pinit = np.array([1.0, -1.0])
     out = optimize.leastsq(errfunc, pinit, args=(logx, logy, logyerr), full_output=True)
     pfinal = out[0]
     index = pfinal[1]
@@ -75,11 +74,9 @@ def powerlaw(x, amp, index):
     return amp * (x ** index)
 
 
-# ---------------------------------------------------------------------
 # Compute 1D DFA for the time series
-# ---------------------------------------------------------------------
 def dfa1d(time_series, grau):
-    # Compute 1D DFA (adapted from Physionet), where the sclae frows according to 'Boxratio'. Returns the array
+    # Compute 1D DFA (adapted from Physionet), where the scale frowns according to 'boxratio'. Returns the array
     # 'vetoutput', where the first column is the logarithm of S scale and the second column is the logarithm of the
     # fluctuation function
 
@@ -140,7 +137,7 @@ def dfa1d(time_series, grau):
 # Main section
 # ---------------------------------------------------------------------
 def main(data):
-    # Disble numpy errors and warnings
+    # Disable numpy errors and warnings
     np.seterr(divide='ignore', invalid='ignore', over='ignore')
 
     # -----------------------------------------------------------------
@@ -223,7 +220,7 @@ def main(data):
     fig_handle.plot(xdata, powerlaw(xdata, amp, index), 'r-', linewidth=1.5, label='$%.4f$' % beta)
     fig_handle.set_xlabel(texto_psdx, fontsize=size_font_axis_x)
     fig_handle.set_ylabel(texto_psdy, fontsize=size_font_axis_y)
-    fig_handle.set_title(texto_titulo_psd + r'%.4f (Theoretical $\beta$ = 2$\alpha$ +1 = %.4f)' % (beta,
+    fig_handle.set_title(texto_titulo_psd + r'%.4f (Theoretical $\beta$ = 2$\alpha$ -1 = %.4f)' % (beta,
                                                                                                    beta_theoretical),
                          loc='center', fontsize=size_font_title)
     fig_handle.set_yscale('log')
@@ -259,9 +256,9 @@ def main(data):
 
     # Draw and save figure (avoid showing to prevent blocking)
     plt.suptitle(title_main, fontsize=size_font_main)
-    img_filename = 'ANALYSIS_PSD_DFA_2.png'
     fig.set_size_inches(10, 5)
-    plt.savefig(img_filename, dpi=300, bbox_inches='tight', pad_inches=0.1)
+    # img_filename = 'ANALYSIS_PSD_DFA_2.png'
+    # plt.savefig(img_filename, dpi=300, bbox_inches='tight', pad_inches=0.1)
     plt.draw()
 
     return alfa, beta_theoretical, beta
@@ -272,5 +269,5 @@ if __name__ == "__main__":
     mean, cov = [1, -1], [(1, .5), (.5, 1)]
     series_x, series_y = np.random.multivariate_normal(mean, cov, size=800).T
     test_data = series_x.tolist()
-    alpha, beta_t, beta = main(test_data)
+    alpha, beta_t, beta_o = main(test_data)
     plt.show()

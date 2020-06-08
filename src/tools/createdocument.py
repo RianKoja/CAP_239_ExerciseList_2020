@@ -7,7 +7,8 @@
 import os
 from docx import Document
 from docx.shared import Inches
-
+from pandas.compat import BytesIO
+import matplotlib.pyplot as plt
 
 class ReportDocument:
     def __init__(self):
@@ -24,11 +25,9 @@ class ReportDocument:
 
         self.file_name = "List_RianKoja_v" + str(file_version) + ".docx"
 
-    def add_fig(self, memfile, wid=6):
-        # Calling function must do:
-        # from pandas.compat import StringIO
-        # memfile = StringIO()
-        # plt.savefig(memfile)
+    def add_fig(self, wid=6):
+        memfile = BytesIO()
+        plt.savefig(memfile)
         self.document.add_picture(memfile, width=Inches(wid))
         memfile.close()
 

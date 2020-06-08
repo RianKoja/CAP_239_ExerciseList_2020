@@ -55,9 +55,7 @@ def plot_inertias(df, algorithm, doc_report):
     plt.title("Inertia for K-Means Clustering , data generated with " + algorithm.name)
     plt.grid(which='both', axis='both')
     plt.draw()
-    memfile = BytesIO()
-    plt.savefig(memfile)
-    doc_report.add_fig(memfile)
+    doc_report.add_fig()
 
     # Also plot silhouette score:
     plt.figure()
@@ -68,9 +66,7 @@ def plot_inertias(df, algorithm, doc_report):
     plt.title("Silhouette Scores for K-Means Clustering, data generated with " + algorithm.name)
     plt.grid(which='both', axis='both')
     plt.draw()
-    memfile = BytesIO()
-    plt.savefig(memfile)
-    doc_report.add_fig(memfile)
+    doc_report.add_fig()
 
     optimal_k = 2 + silhouette_scores.index(max(silhouette_scores))
     print("For data generated with " + algorithm.name + " the maximum silhouette occurs for " + str(optimal_k) + " clusters")
@@ -84,18 +80,14 @@ def create_heatmap(df, selected_k, doc_report):
     sns_plot = sns.heatmap(cross_tab, cmap="YlGnBu", annot=True, cbar=False, fmt="d", square=True, linewidths=0.5)
     plt.title("Incidence Matrix obtained from k-means based on \n" + 'N_elements' + " and " + 'kmeans' + " with k=" +
               str(selected_k))
-    memfile = BytesIO()
-    plt.savefig(memfile)
-    doc_report.add_fig(memfile)
+    doc_report.add_fig()
 
 
 def plot_cullen_frey(df, alg_name, doc_report):
     skewnesses = df['skewness'].astype('float64').tolist()
     kurtosises = df['kurtosis'].astype('float64').tolist()
     cullen_frey_giovanni.cullenfrey(skewnesses, kurtosises, alg_name, alg_name)
-    memfile_cf = BytesIO()
-    plt.savefig(memfile_cf)
-    doc_report.add_fig(memfile_cf)
+    doc_report.add_fig()
 
 
 def exercises_1_3(algorithm, doc_report):
@@ -120,15 +112,11 @@ def exercises_1_3(algorithm, doc_report):
     # Plot the k-means grouping
     plt.figure()
     sns_plot = sns.pairplot(ex_df, hue="kmeans", vars=['variance', 'skewness', 'kurtosis'])
-    memfile2 = BytesIO()
-    plt.savefig(memfile2)
-    doc_report.add_fig(memfile2)
+    doc_report.add_fig()
 
     # For comparison, color mark the number of elements
     sns_plot = sns.pairplot(ex_df, hue='Type', vars=['variance', 'skewness', 'kurtosis'])
-    memfile3 = BytesIO()
-    plt.savefig(memfile3)
-    doc_report.add_fig(memfile3)
+    doc_report.add_fig()
 
     # Plot Cullen-Frey map:
     plot_cullen_frey(ex_df, algorithm.name, doc_report)

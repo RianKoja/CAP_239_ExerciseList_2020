@@ -50,15 +50,11 @@ def report_ex5(doc_report):
     doc_report.document.add_heading('Exercise 5', level=2)
     doc_report.document.add_paragraph("For Henon map:")
     plot_henon()
-    memfile_hn = BytesIO()
-    plt.savefig(memfile_hn)
-    doc_report.add_fig(memfile_hn)
+    doc_report.add_fig()
 
     doc_report.document.add_paragraph("For Logistic map:")
     plot_logis()
-    memfile_lg = BytesIO()
-    plt.savefig(memfile_lg)
-    doc_report.add_fig(memfile_lg)
+    doc_report.add_fig()
 
 
 # Sample execution
