@@ -1,53 +1,50 @@
 # Standard imports:
+import warnings
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn import cluster
+import seaborn as sns
+from sklearn.metrics import silhouette_score
+from sklearn import cluster
 
 
-def k_means_graph(ticker1, ticker2, df, k):
-    # based on https://www.springboard.com/blog/data-mining-python-tutorial/
-    df_reduced = df[[ticker1, ticker2]].dropna()
+def plot_k_means(df, parameters, doc, full_name):
+    # Pick K for K-Means:
+    optimal_k = pick_k(df, parameters)
+    # Build final K-Means object:
+    ex_kmeans = k_means(df, optimal_k, parameters)
+    # Add kmeans grouping to data frame:
+    df['kmeans'] = ex_kmeans.labels_
+    # Plot the k-means grouping
+    sns_plot = sns.pairplot(df, hue="kmeans", vars=parameters, height=1.3)
+    plt.tight_layout(pad=2)
+    plt.suptitle("K-Means Grouping for " + full_name + "\non space " + ", ".join(parameters), fontsize=10)
+    doc.add_fig()
+    plt.draw()
+    return ex_kmeans
+
+
+def pick_k(df, parameters):
+    silhouette_scores = []
+    k_range = list(range(2, 10))
+    for ii in k_range:
+        kmean_obj = k_means(df, ii, parameters)
+        if ii != 1:
+            silhouette_scores.append(silhouette_score(df[parameters], kmean_obj.labels_, metric='euclidean'))
+    optimal_k = k_range[silhouette_scores.index(max(silhouette_scores))]
+    return optimal_k
+
+
+def k_means(df, k, parameters):
+    df_reduced = df[parameters]
     np_array = np.array(df_reduced)
     kmeans = cluster.KMeans(n_clusters=k)
-    kmeans.fit(np_array)
-    labels = kmeans.labels_
-    centroids = kmeans.cluster_centers_
-
-    # Create new figure:
-    fig = plt.gcf()
-    if fig.get_axes():
-        plt.figure(plt.gcf().number+1)
-    fig = plt.gcf()
-    fig.set_size_inches(13, 8)
-
-    for i in range(k):
-        # select only data observations with cluster label == i
-        ds = np_array[np.where(labels == i)]
-        # plot the data observations
-        plt.plot(ds[:, 0], ds[:, 1], 'o', markersize=7)
-        # plot the centroids
-        lines = plt.plot(centroids[i, 0], centroids[i, 1], 'kx')
-        # make the centroid x's bigger
-        plt.setp(lines, ms=15.0)
-        plt.setp(lines, mew=4.0)
-
-    ax = plt.gca()
-
-    # Added tickers as labels:
-    this_df = df.dropna(subset=[ticker1, ticker2])
-    x = this_df[ticker1].tolist()
-    y = this_df[ticker2].tolist()
-    for ii, txt in enumerate(this_df['Código do fundo'].tolist()):
-        ax.annotate(txt, (x[ii], y[ii]), fontsize=7)
-
-    plt.title("K-Means grouping for " + ticker1 + " and " + ticker2 + " with k=" + str(k))
-    plt.xlabel(ticker1)
-    plt.ylabel(ticker2)
-    ax.grid(axis='both')
-    plt.tight_layout()
-    plt.draw()
-
-    return kmeans.inertia_
+    with warnings.catch_warnings():  # suppress the warning for the case perfect grouping is found before end of loop
+        warnings.filterwarnings("ignore")
+        kmeans.fit(np_array)
+    #  labels = kmeans.labels_
+    #  centroids = kmeans.cluster_centers_
+    return kmeans
 
 
 def save_all(xlsx_name):

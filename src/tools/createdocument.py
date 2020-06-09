@@ -10,6 +10,7 @@ from docx.shared import Inches
 from pandas.compat import BytesIO
 import matplotlib.pyplot as plt
 
+
 class ReportDocument:
     def __init__(self):
         self.document = Document()
@@ -33,8 +34,13 @@ class ReportDocument:
 
     def finish(self):
         self.document.save(os.path.join(self.file_path, self.file_name))
-
         print("finished word document file.")
+
+    def add_heading(self, text, level=2):
+        self.document.add_heading(text, level=level)
+
+    def add_paragraph(self, text):
+        self.document.add_paragraph(text)
 
 
 if __name__ == "__main__":

@@ -44,17 +44,17 @@ def main(dx):
 
     # Modified first-order MF-DFA
     stats['delta_alpha'] = stats['LH_max'] - stats['LH_min']
-    print('alpha_min = %g, alpha_max = %g, dalpha = %g'
-          % (stats['LH_min'], stats['LH_max'], stats['delta_alpha']))
+    # print('alpha_min = %g, alpha_max = %g, dalpha = %g'
+    #      % (stats['LH_min'], stats['LH_max'], stats['delta_alpha']))
     index_max = np.argmax(stats['f'])
     stats['alpha_zero'] = stats['LH'][index_max][0]
 
-    print('alpha_zero =', stats['alpha_zero'])
+    # print('alpha_zero =', stats['alpha_zero'])
     stats['a_alpha'] = (stats['alpha_zero'] - stats['LH_min'])/(stats['LH_max'] - stats['alpha_zero'])
-    print('a_alpha =', stats['a_alpha'])
+    # print('a_alpha =', stats['a_alpha'])
     stats['Psi'] = stats['delta_alpha'] / stats['LH_max']
-    print('Psi = %g' % stats['Psi'])
-    print('h_min = %g, h_max = %g, dh = %g\n' % (stats['h_min'], stats['h_max'], stats['delta_alpha']))
+    # print('Psi = %g' % stats['Psi'])
+    # print('h_min = %g, h_max = %g, dh = %g\n' % (stats['h_min'], stats['h_max'], stats['delta_alpha']))
 
     plt.figure()
     nq = np.int(len(q))

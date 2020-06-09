@@ -19,6 +19,7 @@
 # The end user is granted perpetual permission to reproduce, adapt, and/or distribute this code, provided that
 # an appropriate link is given to the original repository it was downloaded from.
 
+import sys
 import numpy as np
 
 
@@ -28,6 +29,8 @@ def get_scaling_exponents(time_measure, data_measure):
     
     log10tm = np.log10(time_measure)
     log10dm = np.log10(data_measure)
+    log10dm[log10dm == -np.inf] = sys.float_info.min
+    log10dm[log10dm == +np.inf] = sys.float_info.max
     
     res = 1.0e+07
     bs_index = n_scales
@@ -37,8 +40,8 @@ def get_scaling_exponents(time_measure, data_measure):
     # boundary scale at which the approximations are optimal in the sense of best fitting to the data measure
     for i in range(3, n_scales - 2 + 1):
         # Major 'i' scales are approximated by the function 'k * x + b' ...
-        curr_log10tm = log10tm[n_scales - i + 1 - 1 : n_scales]
-        curr_log10dm = log10dm[n_scales - i + 1 - 1 : n_scales]
+        curr_log10tm = log10tm[n_scales - i + 1 - 1: n_scales]
+        curr_log10dm = log10dm[n_scales - i + 1 - 1: n_scales]
         det_a = i * np.sum(curr_log10tm ** 2.0) - np.sum(curr_log10tm) ** 2.0
         det_k = i * np.sum(np.multiply(curr_log10tm, curr_log10dm)) - np.sum(curr_log10tm) * np.sum(curr_log10dm)
         det_b = np.sum(curr_log10dm) * np.sum(curr_log10tm ** 2.0) - np.sum(curr_log10tm) * np.sum(np.multiply(curr_log10tm, curr_log10dm))
@@ -67,8 +70,8 @@ def get_scaling_exponents(time_measure, data_measure):
     b_dm = data_measure[n_scales - bs_index + 1 - 1]
     # ... as well as compute the unifractal dimensions using the boundary scale's index:
     # at the major 'bs_index' scales ...
-    curr_log10tm = log10tm[n_scales - bs_index + 1 - 1 : n_scales]
-    curr_log10dm = log10dm[n_scales - bs_index + 1 - 1 : n_scales]
+    curr_log10tm = log10tm[n_scales - bs_index + 1 - 1: n_scales]
+    curr_log10dm = log10dm[n_scales - bs_index + 1 - 1: n_scales]
     det_a = bs_index * np.sum(curr_log10tm ** 2.0) - np.sum(curr_log10tm) ** 2.0
     det_k = bs_index * np.sum(np.multiply(curr_log10tm, curr_log10dm)) - np.sum(curr_log10tm) * np.sum(curr_log10dm)
     d_major = det_k / det_a

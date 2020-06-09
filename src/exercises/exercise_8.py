@@ -18,7 +18,7 @@ def run(doc_report):
     doc_report.document.add_heading('Exercise 8', level=2)
     doc_report.document.add_paragraph("""
       Here we compare the Continuous Wavelet Spectrum for time series generated with each signal generator used so far.
-      """)
+      Both Morley and DOG wavelet charts are used.""")
 
     # Henon map not used as it causes issues with the waipy module.
     names = ('GNRG', 'Color', 'P_model_025_exogen_beta04', 'logistic_rho3.88_tau1.1')  # 'henon_a1.38_b0.22',
@@ -36,6 +36,11 @@ def run(doc_report):
         fig_name = os.path.relpath(fig_name, os.getcwd())
         result = waipy.cwt(data, 1, 1, 0.25, 4, 4 / 0.25, 0.72, 6, mother='Morlet', name='test name')
         waipy.wavelet_plot(fig_name, np.linspace(0, len(data), len(data)), data, 0.03125, result)
+        doc_report.document.add_heading("Morley:", level=4)
+        doc_report.document.add_picture(fig_name + '.png', width=Inches(6))
+        result = waipy.cwt(data, 1, 1, 0.25, 4, 4 / 0.25, 0.72, 6, mother='DOG', name='test name')
+        waipy.wavelet_plot(fig_name, np.linspace(0, len(data), len(data)), data, 0.03125, result)
+        doc_report.document.add_heading("DOG:", level=4)
         doc_report.document.add_picture(fig_name + '.png', width=Inches(6))
 
         plt.close('all')

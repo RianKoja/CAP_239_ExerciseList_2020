@@ -1,11 +1,11 @@
-# Código para SOC Power-Law
+# Código para soc_main Power-Law
 
 import os
 import numpy as np
 import matplotlib.pyplot as plt
 
 
-def SOC(data, n_bins=50):
+def soc_main(data, n_bins=50):
     n = len(data)
     mean = np.mean(data)
     var = np.var(data)
@@ -28,7 +28,7 @@ def SOC(data, n_bins=50):
 
 
 def soc_plot(data, plot_title="Sample Self-Organized Criticality Plot"):
-    prob_gamma, counts = SOC(data)
+    prob_gamma, counts = soc_main(data)
 
     x = np.linspace(1, len(counts), len(counts))
 

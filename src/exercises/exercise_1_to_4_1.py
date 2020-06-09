@@ -127,9 +127,9 @@ if __name__ == '__main__':
     test_report = createdocument.ReportDocument()
 
     # For questions 1-3, do the same procedure importing a different signal generator:
-    from generators import Grng
+    from generators import grng
 
-    a_algorithm = Grng()
+    a_algorithm = grng.Grng()
     # Run the function thar performs exercises:
     exercises_1_3(a_algorithm, test_report)
 

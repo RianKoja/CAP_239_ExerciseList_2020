@@ -46,12 +46,12 @@ def plot_logis(n_points=512):
 
 
 def report_ex5(doc_report):
-    doc_report.document.add_heading('Exercise 5', level=2)
-    doc_report.document.add_paragraph("For Henon map:")
+    doc_report.add_heading('Exercise 5', level=2)
+    doc_report.add_paragraph("For Henon map:")
     plot_henon()
     doc_report.add_fig()
 
-    doc_report.document.add_paragraph("For Logistic map:")
+    doc_report.add_paragraph("For Logistic map:")
     plot_logis()
     doc_report.add_fig()
 

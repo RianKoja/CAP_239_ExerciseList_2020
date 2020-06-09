@@ -185,7 +185,7 @@ def main(data):
     freqs, power, xdata, ydata, amp, index, init, fim = psd(data)
 
     # Beta value is equivalent to the index:
-    beta = index
+    beta = - index
 
     # Define plot colors:
     cor_psd1 = 'k'
