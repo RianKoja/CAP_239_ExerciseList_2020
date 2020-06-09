@@ -3,7 +3,6 @@
 import numpy as np
 from scipy.stats import skew, kurtosis
 import matplotlib.pyplot as plt
-from pandas.compat import BytesIO
 
 # Local imports:
 from generators import henon

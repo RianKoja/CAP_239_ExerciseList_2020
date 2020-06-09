@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 
 # Local imports:
 from tools import createdocument
-from exercises import exercise_1_to_4_1, exercise_4_2, exercise_5, exercise_8
+from exercises import exercise_1_to_4_1, exercise_4_2, exercise_5_1, exercise_8
 from generators import grng, colorednoise, pmodel
 
 print("Starting ", __file__)
@@ -32,7 +32,7 @@ plt.close('all')
 
 doc_report.document.add_heading("Colored Noise", level=3)
 doc_report.document.add_paragraph("\n\n")
-algorithm2 = colorednoise.coloredgenerator()
+algorithm2 = colorednoise.ColoredGenerator()
 exercise_1_to_4_1.exercises_1_3(algorithm2, doc_report)
 doc_report.document.add_paragraph("\n\n")
 plt.close('all')
@@ -48,7 +48,7 @@ plt.close('all')
 exercise_4_2.plot_estimates_noises(doc_report)
 
 # Run for exercise 5:
-exercise_5.report_ex5(doc_report)
+exercise_5_1.report_ex5(doc_report)
 plt.close('all')
 
 # Run for exercise 8:

@@ -7,7 +7,6 @@
 # Standard imports:
 import warnings
 import pandas as pd
-from pandas.compat import BytesIO
 import numpy as np
 from sklearn import cluster
 from sklearn.metrics import silhouette_score
@@ -100,10 +99,6 @@ def exercises_1_3(algorithm, doc_report):
 
     # Add kmeans grouping to data frame:
     ex_df['kmeans'] = ex_kmeans.labels_
-
-    # Save in excel for logging/debbuging:
-    ex_df.to_excel(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'mount', algorithm.name +
-                                '_auxfunctions_test.xlsx'))
 
     # plot heatmap with incidence versus case:
     sns.set()

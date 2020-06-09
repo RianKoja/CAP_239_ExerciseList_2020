@@ -1,8 +1,11 @@
-# from https://github.com/felixpatzelt/colorednoise/blob/master/colorednoise.py
-# can be installed from PyPI with: `pip install colorednoise`
+########################################################################################################################
+# Generate colored noise
+#
+# Based on  https://github.com/felixpatzelt/colorednoise/blob/master/colorednoise.py
+#
+# Adapted by Rian Koja to publish in a GitHub repository with specified licence.
+########################################################################################################################
 
-# """Generate colored noise."""
-import numpy as np
 import pandas as pd
 from numpy import sqrt, newaxis
 from numpy.fft import irfft, rfftfreq
@@ -102,7 +105,7 @@ def powerlaw_psd_gaussian(exponent, size, fmin=0):
     return y
 
 
-class coloredgenerator:
+class ColoredGenerator:
     def __init__(self):
         self.name = "Colored Noise"
         self.length = [8192]

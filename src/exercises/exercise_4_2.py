@@ -1,7 +1,6 @@
 # Standard imports:
 import numpy as np
 import matplotlib.pyplot as plt
-from pandas.compat import BytesIO
 
 # Local imports:
 from tools import stat

@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.metrics import silhouette_score
 from sklearn import cluster
-from pandas.compat import BytesIO
 
 # Local imports:
 from tools import specplus, stat, createdocument
@@ -25,9 +24,6 @@ def plot_beta_compare(df, full_name, doc):
     plt.ylabel(r'$\beta$ from detrended fluctuation analysis $\beta = 2\alpha - 1$')
     plt.title(r'Assessment of $\beta$ computation for ' + full_name + "\nCorrelation = %2.2f" % correlation.iloc[0, 1])
     plt.draw()
-    #memfile_b = BytesIO()
-    #plt.savefig(memfile_b)
-    #doc.add_fig(memfile_b)
     doc.add_fig()
 
 
@@ -44,21 +40,29 @@ def k_means(df, k, parameters):
 
 
 def pick_k(df, parameters):
-    inertias = []
     silhouette_scores = []
     for ii in range(1, 10):
-        kmean_obj = k_means(df[parameters], ii)
-        inertias.append(kmean_obj.inertia_)
+        kmean_obj = k_means(df, ii, parameters)
         if ii != 1:
             silhouette_scores.append(silhouette_score(df[parameters], kmean_obj.labels_, metric='euclidean'))
 
+    optimal_k = 2 + silhouette_scores.index(max(silhouette_scores))
+    return optimal_k
 
-def plot_s_k_b(df):
 
+def plot_k_means(df, parameters, doc, full_name):
+    # Pick K for K-Means:
+    optimal_k = pick_k(df, parameters)
+    # Build final K-Means object:
+    ex_kmeans = k_means(df, optimal_k, parameters)
+    # Add kmeans grouping to data frame:
+    df['kmeans'] = ex_kmeans.labels_
     # Plot the k-means grouping
-    plt.figure()
-    sns_plot = sns.pairplot(df, hue="kmeans", vars=['variance', 'skewness', 'kurtosis'])
-    pass
+    sns_plot = sns.pairplot(df, hue="kmeans", vars=parameters, height=1.2)
+    plt.tight_layout(pad=2)
+    plt.suptitle("K-Means Grouping for " + full_name, fontsize=10)
+    doc.add_fig()
+    plt.draw()
 
 
 def run(doc):
@@ -72,7 +76,7 @@ def run(doc):
     full_names = ('Non Gaussian Random Generator', 'Colored Noise Generator', 'P-Model', 'Logistic Map', 'Henon Map')
     sizes = (160, 120, 120, 120)
     #sizes = (1, 1, 1, 1)
-    columns = ['skewness', 'skewness_square', 'kurtosis', 'alpha', 'beta', 'beta_theoretical']
+    columns = ['skewness', 'skewness²', 'kurtosis', 'alpha', 'beta', 'beta_theoretical']
     for (name, func, full_name, size) in zip(names, functions, full_names, sizes):
         df = pd.DataFrame(columns=columns)
         for ii in range(0, size):
@@ -86,7 +90,10 @@ def run(doc):
             df = df.append(pd.DataFrame([[ds['skewness'], ds['skewness']**2, ds['kurtosis'], alpha, beta, beta_t]],
                            columns=columns), ignore_index=True, sort=False)
         plot_beta_compare(df, full_name, doc)
-        print(df)
+        for parameter_set in (['skewness²', 'kurtosis', 'beta'], ['skewness²', 'kurtosis', 'alpha']):
+
+            # Plot K-Means:
+            plot_k_means(df, parameter_set, doc, full_name)
 
 
 # Sample execution
