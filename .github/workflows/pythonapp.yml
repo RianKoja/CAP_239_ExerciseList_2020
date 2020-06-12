@@ -21,6 +21,8 @@ jobs:
           pip install -r src/requirements.txt
           # install black if available (Python 3.6 and above)
           pip install black || true
-          # Run all python files and see if they execute succesfully:
-          find . -iregex '.*\.\(py\|ipynb\)' -printf '%f\0' | xargs -0 echo "$0"
+      - name: Run all python files and see if they execute successfully
+        run: |
+          cd ./src 
+          find -name "*.py" -not -path "*/waipy/*" -exec python {} +
           
