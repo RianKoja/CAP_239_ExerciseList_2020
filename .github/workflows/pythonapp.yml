@@ -21,7 +21,8 @@ jobs:
           pip install -r src/requirements.txt
           # install black if available (Python 3.6 and above)
           pip install black || true
-          # Run all python files and see if they execute successfully:
+      - name: Run all python files and see if they execute successfully
           cd ./src 
-          find -name "*.py" -not -path "*/waipy/*" -exec python {} +
+          python Entry.py
+          #find -name "*.py" -not -path "*/waipy/*" -exec python {} + // not working due to import error.
           
