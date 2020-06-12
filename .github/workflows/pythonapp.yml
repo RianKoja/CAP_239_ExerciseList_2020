@@ -22,6 +22,7 @@ jobs:
           # install black if available (Python 3.6 and above)
           pip install black || true
       - name: Run all python files and see if they execute successfully
+        run: |
           cd ./src 
           python Entry.py
           #find -name "*.py" -not -path "*/waipy/*" -exec python {} + // not working due to import error.
