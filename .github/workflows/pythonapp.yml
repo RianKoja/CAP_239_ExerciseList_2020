@@ -26,4 +26,8 @@ jobs:
           cd ./src 
           python Entry.py
           #find -name "*.py" -not -path "*/waipy/*" -exec python {} + // not working due to import error.
+      - uses: actions/upload-artifact@v2
+        with:
+          name: my-artifact
+          path: ./mount/List_RianKoja_v1.docx
           
