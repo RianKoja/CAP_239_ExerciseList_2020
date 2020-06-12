@@ -13,11 +13,12 @@ import tools.mfdfa_ss as mfdfa
 
 
 def run(doc):
-    doc.add_heading("Exercise 7.1")
+    doc.add_heading("Exercise 7.1", level=2)
+    doc.add_heading("Exercise 7.1", level=3)
     doc.add_paragraph("The MDFDA files have been fully refactored for the purpose of this work, with many additional" +
                       " parameters being computed and shown in charts, including" + r'$\Psi$')
 
-    doc.add_heading("Exercise 7.2")
+    doc.add_heading("Exercise 7.2", level=3)
     doc.add_paragraph("For each signal generator, only one singularity spectrum will be plotted, but the aggregated " +
                       " statistics will be shown for the next item.")
 
@@ -28,7 +29,7 @@ def run(doc):
     names = ('GNRG', 'Color', 'P_model_025_exogen_beta04', 'logistic_rho3.88_tau1.1', 'henon_a1.38_b0.22')
     functions = (lambda: grng.time_series(2 ** np.random.randint(6, 13), 1),
                  lambda: colorednoise.powerlaw_psd_gaussian(np.random.uniform(0, 2), 8192),
-                 lambda: pmodel.pmodel(8192, np.random.uniform(0.18, 0.42), 0.4)[1],
+                 lambda: pmodel.pmodel(n_values=8192, p=np.random.uniform(0.18, 0.42), slope=0.4)[1],
                  lambda: logis.logistic_series(np.random.uniform(3.85, 3.95), 0.5, 8192)[1],
                  lambda: henon.henon_series(np.random.uniform(1.35, 1.4), np.random.uniform(0.21, 0.31), 8192)[1])
 
@@ -36,6 +37,8 @@ def run(doc):
     sizes = (80, 60, 60, 60, 60)
     columns = ['skewness²', r'$\Psi$', 'generator']
     df_all = pd.DataFrame(columns=columns)
+    xd = list()
+    yd = list()
     for (name, func, full_name, size) in zip(names, functions, full_names, sizes):
         doc.add_heading(full_name, level=3)
         df_tmp = pd.DataFrame(columns=columns)
@@ -46,6 +49,10 @@ def run(doc):
             ret = mfdfa.main(data)
             df_tmp = df_tmp.append(pd.DataFrame([[skew(data)**2, ret['Psi'], full_name]], columns=columns))
         doc.add_fig()
+        # Save data form the last chart:
+        line = plt.gca().get_lines()[0]
+        xd.append(line.get_xdata())
+        yd.append(line.get_ydata())
         # Add K-means chart:
         graphs.plot_k_means(df_tmp, ['skewness²', r'$\Psi$'], doc, full_name)
 
@@ -53,8 +60,25 @@ def run(doc):
     doc.add_heading("For all generators:", level=3)
     graphs.plot_k_means(df_all, ['skewness²', r'$\Psi$'], doc, "All series")
 
+    plt.figure()
+    for x, y, full_name in zip(xd, yd, full_names):
+        plt.plot(x, y, 'o-', label=full_name)
+    plt.title("Comparing Singularity Spectra")
+    plt.xlabel(r'$\alpha$')
+    plt.ylabel(r'$f(\alpha)$')
+    plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.1), fancybox=True, shadow=True, ncol=3)
+    plt.grid('on', which='both')
+    plt.tight_layout()
+    doc.add_heading("Comparing singularity Spectra", level=4)
+    doc.add_paragraph("Here we show a comparative example of the singularity spectrum for time series generated from " +
+                      "different methods, in particular, we see the much wider spectrum of the series generated with " +
+                      "P-Model, which is also quite symmetrical, while for the other models, the spectrum is " +
+                      "left-truncated, which indicates that the spectrum is insensitive to larger local fluctuations.")
+    doc.add_paragraph("The spectrum of the P-Model being the widest, also indicates a higher degree of " +
+                      "multifractality and data complexity.")
+    doc.add_fig()
     # Next section:
-    doc.add_heading("Exercise 7.3", level=2)
+    doc.add_heading("Exercise 7.3", level=3)
     doc.add_paragraph("")
     # Load country data:
     df_all = getdata.acquire_data('all')
@@ -68,7 +92,6 @@ def run(doc):
             ret = mfdfa.main(data)
             plt.close('all')
             df = df.append(pd.DataFrame([[skew(data) ** 2, ret['Psi'], location]], columns=columns))
-
     kmeans_obj = graphs.plot_k_means(df, ['skewness²', r'$\Psi$'], doc, "New Cases of COVID-19 By Country")
     df['group'] = kmeans_obj.labels_
     doc.add_paragraph("Now, we print the results for each country along with the grouping proposed:")

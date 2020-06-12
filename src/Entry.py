@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 # Local imports:
 from tools import createdocument
 from exercises import exercise_1_to_4_1, exercise_4_2, exercise_5_1, exercise_6_1, exercise_6_2, exercise_6_3
-from exercises import exercise_7, exercise_8
+from exercises import exercise_7, exercise_8, exercise_9
 from generators import grng, colorednoise, pmodel
 
 print("Starting ", __file__)
@@ -48,7 +48,8 @@ doc_report.add_paragraph("\n\n")
 plt.close('all')
 
 # Exercise 4.1
-doc_report.add_heading("Exercise 4.1", level=2)
+doc_report.add_heading("Exercise 4", level=2)
+doc_report.add_heading("Exercise 4.1", level=3)
 doc_report.add_paragraph("This exercise produces results for each of the generators used in the prior exercises, thus " +
                          "such results were shown in the previous sections.")
 
@@ -79,6 +80,9 @@ plt.close('all')
 exercise_8.run(doc_report)
 plt.close('all')
 
+# Run for exercise 9:
+exercise_9.run(doc_report)
+plt.close('all')
 
 # Finish the report:
 doc_report.finish()

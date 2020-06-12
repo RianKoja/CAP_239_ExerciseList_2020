@@ -18,7 +18,7 @@ def soc_main(data, n_bins=50):
         gamma.append((data[i] - mean) / std)
 
         """ Computa P[Psi_i] """
-        # Retorna o número de elementos em cada bin, bem como os delimitare
+        # Retorna o número de elementos em cada bin, bem como os delimiters
     this_counts, bins = np.histogram(gamma, n_bins)
     prob_gamma = []
     for i in range(0, n_bins):

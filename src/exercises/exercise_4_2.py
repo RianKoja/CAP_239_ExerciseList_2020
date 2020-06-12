@@ -8,7 +8,7 @@ from tools import stat
 
 def plot_estimates_noises(doc):
     from generators.colorednoise import powerlaw_psd_gaussian
-    doc.document.add_heading('Exercise 4.2', level=2)
+    doc.document.add_heading('Exercise 4.2', level=3)
     doc.document.add_paragraph(
         "Here we compare different methods of estimating a probability density function from sampled data.\n" +
         "The first is to use Kernel Density Estimation, a standard method to compose a PDF as a pondered sum of " +

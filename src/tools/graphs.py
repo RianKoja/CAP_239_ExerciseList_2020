@@ -16,7 +16,7 @@ def plot_k_means(df, parameters, doc, full_name):
     # Add kmeans grouping to data frame:
     df['kmeans'] = ex_kmeans.labels_
     # Plot the k-means grouping
-    sns_plot = sns.pairplot(df, hue="kmeans", vars=parameters, height=1.3)
+    sns_plot = sns.pairplot(df, hue="kmeans", vars=parameters)  # , height=1.3)
     plt.tight_layout(pad=2)
     plt.suptitle("K-Means Grouping for " + full_name + "\non space " + ", ".join(parameters), fontsize=10)
     doc.add_fig()

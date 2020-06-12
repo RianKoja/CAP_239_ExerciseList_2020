@@ -67,7 +67,7 @@ def run(doc):
             graphs.plot_k_means(df, parameter_set, doc, full_name)
 
     # Now run the analysis for the global data frame:
-    doc.add_paragraph("Combining all data series:")
+    doc.add_heading("Combining all data series:", level=3)
     # Check beta relation:
     plot_beta_compare(df_global, "All series", doc)
     # Group with K-Means
