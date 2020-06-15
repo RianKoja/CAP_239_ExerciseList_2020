@@ -250,7 +250,7 @@ def main(data):
 
     else:
         fig_dfa = fig.add_subplot(2, 2, 4)
-        fig_dfa.set_title('Detrended Fluctuation Analysis $\alpha$ = ' + 'N.A.', loc='center',
+        fig_dfa.set_title(r'Detrended Fluctuation Analysis $\alpha$ = ' + 'N.A.', loc='center',
                           fontsize=size_font_title)
         fig_dfa.grid()
 
