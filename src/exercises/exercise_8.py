@@ -8,25 +8,47 @@ from docx.shared import Inches
 
 # Local imports:
 from generators import grng, colorednoise, pmodel, logis, henon
-from tools import createdocument
+from tools import createdocument, getdata
 
 
 def run(doc_report):
     doc_report.add_heading('Exercise 8', level=2)
+    doc_report.add_heading('Exercise 8.1', level=3)
     doc_report.add_paragraph("""
-      Here we compare the Continuous Wavelet Spectrum for time series generated with each signal generator used so far.
-      Both Morley and DOG wavelet charts are used.""")
+      Here we compare the Continuous Wavelet Spectrum for time series generated with each signal generator used so far,
+      along with provided data series. Both Morley and DOG wavelet charts are used.""")
+
+    mount_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'mount')
+    with open(os.path.join(mount_path, 'surftemp504.txt'), 'r') as text_file:
+        list_surftemp504 = [float(w) for w in text_file.read().split('\n')]
+        print(len(list_surftemp504))
+
+    with open(os.path.join(mount_path, 'sol3ghz.dat'), 'r') as text_file:
+        list_sol3ghz = [float(w) for w in text_file.read().split('\n')]
+        print(len(list_sol3ghz))
 
     # Henon map not used as it causes issues with the waipy module.
-    names = ('GNRG', 'Color', 'P_model_025_exogen_beta04', 'logistic_rho3.88_tau1.1', 'henon_a1.38_b0.22')
-    generators = (lambda: grng.time_series(8192, 1),
+    names = ('surftemp504', 'sol3ghz', 'USA_COVID19', 'GNRG', 'Color', 'P_model_038_endogen_beta04',
+             'P_model_025_exogen_beta04', 'logistic_rho3.88_tau1.1', 'henon_a1.38_b0.22')
+    comments = ('', 'Particularly for sol3ghz data set, we see two wavelet spectrum peaks, which indicates some ' +
+                'recurring feature of the signal that occurs in the time associated with around 8000 samples.',
+                'The DOG wavelet seems to reveal some interesting pattern on the USA COVID-19 data around the 128 day' +
+                'period, while the Morlet transform peaks the spectrum close to 64 days.',
+                '', '', '', '', '', '')
+    generators = (lambda: list_surftemp504,
+                  lambda: list_sol3ghz,
+                  lambda: getdata.acquire_data(date_ini='2020-02-20').new_cases.to_list(),
+                  lambda: grng.time_series(8192, 1),
                   lambda: colorednoise.powerlaw_psd_gaussian(1, 8192),
+                  lambda: pmodel.pmodel(n_values=8192, p=0.38, slope=0.4)[1],
                   lambda: pmodel.pmodel(n_values=8192, p=0.25, slope=0.4)[1],
                   lambda: logis.logistic_series(3.88, 1.1, 8192)[1],
                   lambda: henon.henon_series(np.random.uniform(1.35, 1.4), np.random.uniform(0.21, 0.31), 8192)[1])
-    # lambda: np.array(henon.henon_series(1.38, 0.22, 8192 - 1)[1], dtype=np.float32),
-    full_names = ('Non Gaussian Random Generator', 'Colored Noise Generator', 'P-Model', 'Logistic Map', 'Henon Map')
-    for (name, func, full_name) in zip(names, generators, full_names):
+
+    full_names = ('surftemp504 Dataset', 'sol3ghz Dataset', 'Daily new cases of COVID-19 in the USA',
+                  'Non Gaussian Random Generator', 'Colored Noise Generator', 'P-Model Endogenous', 'P-Model Exogenous',
+                  'Logistic Map', 'Henon Map')
+    for (name, func, full_name, comment) in zip(names, generators, full_names, comments):
         data = func()
         doc_report.add_heading(full_name, level=3)
 
@@ -49,6 +71,7 @@ def run(doc_report):
             doc_report.add_heading("DOG could not be computed for " + full_name, level=4)
             doc_report.add_paragraph("The received error message was: \n" + str(e))
         plt.close('all')
+        doc_report.add_paragraph(comment)
 
 
 # Sample execution:
