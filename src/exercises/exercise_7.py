@@ -90,8 +90,10 @@ def run(doc):
         data = df_owd['new_cases'].to_list()
         if len(list(set(data))) > 11:
             ret = mfdfa.main(data)
+            this_skew = skew(data)
             plt.close('all')
-            df = df.append(pd.DataFrame([[skew(data) ** 2, ret['Psi'], location]], columns=columns))
+            if not np.isnan(ret['Psi']) and not np.isnan(this_skew):
+                df = df.append(pd.DataFrame([[this_skew ** 2, ret['Psi'], location]], columns=columns))
     kmeans_obj = graphs.plot_k_means(df, ['skewness²', r'$\Psi$'], doc, "New Cases of COVID-19 By Country")
     df['group'] = kmeans_obj.labels_
     doc.add_paragraph("Now, we print the results for each country along with the grouping proposed:")
