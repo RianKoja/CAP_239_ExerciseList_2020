@@ -25,5 +25,13 @@ jobs:
         run: |
           cd ./src 
           python Entry.py
-          #find -name "*.py" -not -path "*/waipy/*" -exec python {} + // not working due to import error.
+          echo "Here is a pwd:"
+          pwd
+          echo "Here is a ls:"
+          ls
+      - name: Upload reports
+        uses: actions/upload-artifact@v2
+        with:
+          name: my-artifact
+          path: /home/runner/work/CAP_239_ExerciseList_2020/CAP_239_ExerciseList_2020/src/mount/List_RianKoja_v1.docx
           
